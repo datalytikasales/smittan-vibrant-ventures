@@ -10,22 +10,38 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      if (isRegistering) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/admin/leads`,
+          },
+        });
+        if (error) throw error;
 
-      if (error) throw error;
+        toast({
+          title: "Registration successful",
+          description: "Please check your email to verify your account.",
+        });
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
-      navigate("/admin/leads");
+        if (error) throw error;
+        navigate("/admin/leads");
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -68,10 +84,12 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Admin Login</CardTitle>
+          <CardTitle className="text-2xl text-center">
+            {isRegistering ? "Register" : "Admin Login"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleAuth} className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="email">Email</label>
               <Input
@@ -97,16 +115,26 @@ const Login = () => {
               className="w-full"
               disabled={isLoading}
             >
-              {isLoading ? "Loading..." : "Login"}
+              {isLoading ? "Loading..." : isRegistering ? "Register" : "Login"}
             </Button>
-            <Button
-              type="button"
-              variant="link"
-              className="w-full"
-              onClick={handleResetPassword}
-            >
-              Forgot Password?
-            </Button>
+            <div className="flex justify-between">
+              <Button
+                type="button"
+                variant="link"
+                onClick={() => setIsRegistering(!isRegistering)}
+              >
+                {isRegistering ? "Back to Login" : "Need an account?"}
+              </Button>
+              {!isRegistering && (
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={handleResetPassword}
+                >
+                  Forgot Password?
+                </Button>
+              )}
+            </div>
           </form>
         </CardContent>
       </Card>
