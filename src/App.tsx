@@ -9,6 +9,8 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
+import Login from "./pages/admin/Login";
+import Leads from "./pages/admin/Leads";
 
 const queryClient = new QueryClient();
 
@@ -17,16 +19,27 @@ const App = () => (
     <TooltipProvider>
       <BrowserRouter>
         <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/contact" element={<Contact />} />
-            </Routes>
-          </main>
-          <Footer />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <Navbar />
+                  <main className="flex-grow">
+                    <Routes>
+                      <Route index element={<Index />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/services" element={<Services />} />
+                      <Route path="/contact" element={<Contact />} />
+                    </Routes>
+                  </main>
+                  <Footer />
+                </>
+              }
+            />
+            <Route path="/admin" element={<Login />} />
+            <Route path="/admin/leads" element={<Leads />} />
+          </Routes>
         </div>
       </BrowserRouter>
       <Toaster />
