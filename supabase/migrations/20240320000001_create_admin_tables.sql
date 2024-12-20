@@ -1,34 +1,37 @@
 -- Enable the pgcrypto extension for password hashing
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- Create the contact_submissions table if it doesn't exist
-CREATE TABLE IF NOT EXISTS contact_submissions (
-    id BIGSERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    message TEXT NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+-- Create the profiles table to store additional user information
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID REFERENCES auth.users(id) PRIMARY KEY,
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    is_admin BOOLEAN DEFAULT FALSE
 );
 
--- Create a trigger to automatically update the updated_at timestamp
-CREATE OR REPLACE FUNCTION update_updated_at_column()
+-- Set up RLS for profiles
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for profiles
+CREATE POLICY "Users can read their own profile" 
+    ON public.profiles 
+    FOR SELECT 
+    USING (auth.uid() = id);
+
+CREATE POLICY "Users can update their own profile" 
+    ON public.profiles 
+    FOR UPDATE 
+    USING (auth.uid() = id);
+
+-- Create a trigger to create a profile when a user signs up
+CREATE OR REPLACE FUNCTION public.handle_new_user() 
 RETURNS TRIGGER AS $$
 BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
+    INSERT INTO public.profiles (id)
+    VALUES (new.id);
+    RETURN new;
 END;
-$$ language 'plpgsql';
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
-CREATE TRIGGER update_contact_submissions_updated_at
-    BEFORE UPDATE ON contact_submissions
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
-
--- Set up Row Level Security (RLS)
-ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
-
--- Create policies
-CREATE POLICY "Enable insert for all users" ON contact_submissions FOR INSERT TO public WITH CHECK (true);
-CREATE POLICY "Enable read access for authenticated users only" ON contact_submissions FOR SELECT TO authenticated USING (true);
+CREATE OR REPLACE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();

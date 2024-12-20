@@ -14,3 +14,9 @@ alter table public.contact_submissions enable row level security;
 create policy "Allow inserts" on public.contact_submissions
   for insert
   with check (true);
+
+-- Create policy to allow reads from authenticated users only
+create policy "Allow reads from authenticated users" on public.contact_submissions
+  for select
+  to authenticated
+  using (true);
