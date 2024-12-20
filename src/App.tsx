@@ -20,25 +20,22 @@ const App = () => (
       <BrowserRouter>
         <div className="min-h-screen flex flex-col">
           <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <Navbar />
-                  <main className="flex-grow">
-                    <Routes>
-                      <Route index element={<Index />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/services" element={<Services />} />
-                      <Route path="/contact" element={<Contact />} />
-                    </Routes>
-                  </main>
-                  <Footer />
-                </>
-              }
-            />
             <Route path="/admin" element={<Login />} />
             <Route path="/admin/leads" element={<Leads />} />
+            <Route path="/*" element={
+              <>
+                <Navbar />
+                <main className="flex-grow">
+                  <Routes>
+                    <Route index element={<Index />} />
+                    <Route path="about" element={<About />} />
+                    <Route path="services" element={<Services />} />
+                    <Route path="contact" element={<Contact />} />
+                  </Routes>
+                </main>
+                <Footer />
+              </>
+            } />
           </Routes>
         </div>
       </BrowserRouter>
