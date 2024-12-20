@@ -1,5 +1,6 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Target, Users, Trophy, Lightbulb } from "lucide-react";
 
 const values = [
