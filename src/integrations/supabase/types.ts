@@ -43,7 +43,7 @@ export type Database = {
           id: string
           image_url: string
           order_index: number | null
-          project_gallery_id: string | null
+          project_gallery_id: string
         }
         Insert: {
           caption?: string | null
@@ -51,7 +51,7 @@ export type Database = {
           id?: string
           image_url: string
           order_index?: number | null
-          project_gallery_id?: string | null
+          project_gallery_id: string
         }
         Update: {
           caption?: string | null
@@ -59,7 +59,7 @@ export type Database = {
           id?: string
           image_url?: string
           order_index?: number | null
-          project_gallery_id?: string | null
+          project_gallery_id?: string
         }
         Relationships: [
           {
