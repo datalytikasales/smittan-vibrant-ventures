@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { Loader2, Plus, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import {
   Form,
   FormControl,
@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const formSchema = z.object({
   title: z.string().min(1).max(150, "Title must not exceed 150 characters"),
@@ -34,8 +35,29 @@ interface ImageUpload {
 const EditGallery = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [images, setImages] = useState<ImageUpload[]>([]);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/admin");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("is_admin")
+        .eq("id", session.user.id)
+        .single();
+
+      setIsAdmin(profile?.is_admin || false);
+    };
+
+    checkAdminStatus();
+  }, [navigate]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,6 +99,15 @@ const EditGallery = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!isAdmin) {
+      toast({
+        title: "Error",
+        description: "You don't have permission to create gallery projects",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (images.length === 0) {
       toast({
         title: "Error",
@@ -150,6 +181,28 @@ const EditGallery = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (isAdmin === null) {
+    return (
+      <div className="container py-8">
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  if (isAdmin === false) {
+    return (
+      <div className="container py-8">
+        <Alert variant="destructive">
+          <AlertDescription>
+            You don't have permission to access this page.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-8">
