@@ -10,7 +10,7 @@ interface GalleryProject {
   title: string;
   description: string | null;
   date: string | null;
-  images: {
+  gallery_images: {  // Changed from 'images' to 'gallery_images' to match Supabase response
     id: string;
     image_url: string;
     caption: string | null;
@@ -79,7 +79,7 @@ const Gallery = () => {
       <div className="container py-12">
         <div className="space-y-16">
           {projects?.map((project) => {
-            const sortedImages = [...(project.images || [])].sort(
+            const sortedImages = [...(project.gallery_images || [])].sort(  // Changed from project.images to project.gallery_images
               (a, b) => (a.order_index || 0) - (b.order_index || 0)
             );
 
