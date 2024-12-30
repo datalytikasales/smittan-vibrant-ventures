@@ -24,9 +24,11 @@ const formSchema = z.object({
   message: z.string().min(10, "Message must be at least 10 characters"),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 const Contact = () => {
   const { toast } = useToast();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -36,11 +38,16 @@ const Contact = () => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: FormValues) => {
     try {
       const { error } = await supabase
         .from('contact_submissions')
-        .insert([values]);
+        .insert({
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          message: values.message,
+        });
 
       if (error) throw error;
 
