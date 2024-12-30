@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar } from "./components/layout/Navbar";
 import { Footer } from "./components/layout/Footer";
+import { AdminLayout } from "./components/layout/AdminLayout";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Services from "./pages/Services";
@@ -21,7 +22,13 @@ const App = () => (
         <div className="min-h-screen flex flex-col">
           <Routes>
             <Route path="/admin" element={<Login />} />
-            <Route path="/admin/leads" element={<Leads />} />
+            <Route path="/admin/*" element={
+              <AdminLayout>
+                <Routes>
+                  <Route path="leads" element={<Leads />} />
+                </Routes>
+              </AdminLayout>
+            } />
             <Route path="/*" element={
               <>
                 <Navbar />
