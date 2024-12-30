@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { GalleryForm, type GalleryFormValues } from "@/components/admin/gallery/GalleryForm";
+import { uploadGalleryImage } from "@/utils/storage";
 
 interface ImageUpload {
   file?: File;
@@ -152,46 +153,24 @@ const EditGallery = () => {
       // Upload new images and create gallery entries
       for (let i = 0; i < images.length; i++) {
         const image = images[i];
+        let imageUrl = image.preview;
         
         if (image.file) {
-          // Upload new file
-          const fileExt = image.file.name.split(".").pop();
-          const filePath = `${crypto.randomUUID()}.${fileExt}`;
-
-          const { error: uploadError } = await supabase.storage
-            .from("gallery")
-            .upload(filePath, image.file);
-
-          if (uploadError) throw uploadError;
-
-          const { data: publicUrl } = supabase.storage
-            .from("gallery")
-            .getPublicUrl(filePath);
-
-          // Create gallery image entry
-          const { error: galleryError } = await supabase
-            .from("gallery_images")
-            .insert({
-              project_gallery_id: project.id,
-              image_url: publicUrl.publicUrl,
-              caption: image.caption || null,
-              order_index: i,
-            });
-
-          if (galleryError) throw galleryError;
-        } else {
-          // Re-create existing image entry
-          const { error: galleryError } = await supabase
-            .from("gallery_images")
-            .insert({
-              project_gallery_id: project.id,
-              image_url: image.preview,
-              caption: image.caption || null,
-              order_index: i,
-            });
-
-          if (galleryError) throw galleryError;
+          // Upload new file using the utility function
+          imageUrl = await uploadGalleryImage(image.file);
         }
+
+        // Create gallery image entry
+        const { error: galleryError } = await supabase
+          .from("gallery_images")
+          .insert({
+            project_gallery_id: project.id,
+            image_url: imageUrl,
+            caption: image.caption || null,
+            order_index: i,
+          });
+
+        if (galleryError) throw galleryError;
       }
 
       toast({

@@ -13,49 +13,107 @@ import { Button } from "@/components/ui/button";
 import { LogOut, MessageSquare, Image, Plus, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
+    let mounted = true;
+
     const checkAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) throw sessionError;
+
         if (!session) {
-          navigate("/admin");
+          if (mounted) {
+            setIsAdmin(false);
+            navigate("/admin");
+          }
           return;
         }
 
-        const { data: profile, error } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("is_admin")
           .eq("id", session.user.id)
           .single();
 
-        if (error) throw error;
+        if (profileError) throw profileError;
 
         if (!profile?.is_admin) {
-          navigate("/admin");
+          toast({
+            variant: "destructive",
+            title: "Access Denied",
+            description: "You don't have admin privileges.",
+          });
+          await supabase.auth.signOut();
+          if (mounted) {
+            setIsAdmin(false);
+            navigate("/admin");
+          }
           return;
         }
 
-        setIsAdmin(true);
-      } catch (error) {
+        if (mounted) {
+          setIsAdmin(true);
+        }
+      } catch (error: any) {
         console.error("Error checking admin status:", error);
-        navigate("/admin");
+        toast({
+          variant: "destructive",
+          title: "Authentication Error",
+          description: error.message || "Please try logging in again.",
+        });
+        if (mounted) {
+          setIsAdmin(false);
+          navigate("/admin");
+        }
       } finally {
-        setIsLoading(false);
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     };
 
+    // Set up auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!session) {
+        if (mounted) {
+          setIsAdmin(false);
+          navigate("/admin");
+        }
+      } else {
+        // Recheck admin status on auth state change
+        checkAuth();
+      }
+    });
+
     checkAuth();
-  }, [navigate]);
+
+    // Cleanup
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [navigate, toast]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/admin");
+    try {
+      await supabase.auth.signOut();
+      navigate("/admin");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to log out. Please try again.",
+      });
+    }
   };
 
   if (isLoading) {
