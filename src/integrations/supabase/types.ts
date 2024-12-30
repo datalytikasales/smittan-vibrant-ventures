@@ -43,7 +43,7 @@ export type Database = {
           id: string
           image_url: string
           order_index: number | null
-          project_id: string | null
+          project_gallery_id: string | null
         }
         Insert: {
           caption?: string | null
@@ -51,7 +51,7 @@ export type Database = {
           id?: string
           image_url: string
           order_index?: number | null
-          project_id?: string | null
+          project_gallery_id?: string | null
         }
         Update: {
           caption?: string | null
@@ -59,12 +59,12 @@ export type Database = {
           id?: string
           image_url?: string
           order_index?: number | null
-          project_id?: string | null
+          project_gallery_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "gallery_images_project_id_fkey"
-            columns: ["project_id"]
+            foreignKeyName: "gallery_images_project_gallery_id_fkey"
+            columns: ["project_gallery_id"]
             isOneToOne: false
             referencedRelation: "project_gallery"
             referencedColumns: ["id"]
