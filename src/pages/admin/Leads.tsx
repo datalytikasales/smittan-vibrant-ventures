@@ -10,13 +10,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { supabase } from "@/lib/supabase";
-import { AdminLayout } from "@/components/layout/AdminLayout";
+import { format } from "date-fns";
 
 interface Lead {
-  id: number;
+  id: string;
   name: string;
   email: string;
-  phone: string;
+  phone: string | null;
   message: string;
   created_at: string;
 }
@@ -55,49 +55,59 @@ const Leads = () => {
         title: "Error",
         description: "Failed to fetch leads",
       });
+      console.error('Error fetching leads:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   return (
-    <AdminLayout>
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Leads Management</h1>
-        <div className="bg-white rounded-lg shadow">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Message</TableHead>
-                <TableHead>Date</TableHead>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Leads Management</h1>
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead className="max-w-md">Message</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {leads.map((lead) => (
+              <TableRow key={lead.id}>
+                <TableCell>
+                  {format(new Date(lead.created_at), 'MMM d, yyyy HH:mm')}
+                </TableCell>
+                <TableCell>{lead.name}</TableCell>
+                <TableCell>{lead.email}</TableCell>
+                <TableCell>{lead.phone || '-'}</TableCell>
+                <TableCell className="max-w-md truncate">
+                  {lead.message}
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {leads.map((lead) => (
-                <TableRow key={lead.id}>
-                  <TableCell>{lead.name}</TableCell>
-                  <TableCell>{lead.email}</TableCell>
-                  <TableCell>{lead.phone}</TableCell>
-                  <TableCell className="max-w-md truncate">
-                    {lead.message}
-                  </TableCell>
-                  <TableCell>
-                    {new Date(lead.created_at).toLocaleDateString()}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            ))}
+            {leads.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                  No leads found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
-    </AdminLayout>
+    </div>
   );
 };
 

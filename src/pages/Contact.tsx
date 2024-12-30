@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHero } from "@/components/layout/PageHero";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -37,14 +38,19 @@ const Contact = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      // TODO: Add Supabase integration here
-      console.log(values);
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert([values]);
+
+      if (error) throw error;
+
       toast({
         title: "Message sent!",
         description: "We'll get back to you as soon as possible.",
       });
       form.reset();
     } catch (error) {
+      console.error('Error submitting form:', error);
       toast({
         variant: "destructive",
         title: "Error",
