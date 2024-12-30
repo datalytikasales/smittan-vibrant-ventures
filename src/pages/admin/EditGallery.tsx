@@ -1,41 +1,24 @@
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useNavigate } from "react-router-dom";
-import { Loader2, Plus, X } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
-const formSchema = z.object({
-  title: z.string().min(1).max(150, "Title must not exceed 150 characters"),
-  description: z.string().max(2500, "Description must not exceed 2500 characters"),
-  date: z.string().optional(),
-});
+import { GalleryForm, type GalleryFormValues } from "@/components/admin/gallery/GalleryForm";
 
 interface ImageUpload {
-  file: File;
+  file?: File;
   caption: string;
   preview: string;
 }
 
 const EditGallery = () => {
+  const { projectId } = useParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [images, setImages] = useState<ImageUpload[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [defaultValues, setDefaultValues] = useState<GalleryFormValues | undefined>();
+  const [existingImages, setExistingImages] = useState<ImageUpload[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -56,53 +39,64 @@ const EditGallery = () => {
       setIsAdmin(profile?.is_admin || false);
     };
 
+    const fetchProject = async () => {
+      if (!projectId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const { data: project, error: projectError } = await supabase
+          .from("project_gallery")
+          .select("*")
+          .eq("id", projectId)
+          .single();
+
+        if (projectError) throw projectError;
+
+        if (project) {
+          setDefaultValues({
+            title: project.title,
+            description: project.description || "",
+            date: project.date || new Date().toISOString().split("T")[0],
+          });
+
+          const { data: images, error: imagesError } = await supabase
+            .from("gallery_images")
+            .select("*")
+            .eq("project_gallery_id", projectId)
+            .order("order_index");
+
+          if (imagesError) throw imagesError;
+
+          setExistingImages(
+            images.map((image) => ({
+              preview: image.image_url,
+              caption: image.caption || "",
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching project:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch project details",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     checkAdminStatus();
-  }, [navigate]);
+    fetchProject();
+  }, [projectId, navigate, toast]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      date: new Date().toISOString().split("T")[0],
-    },
-  });
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files?.length) return;
-
-    const newImages: ImageUpload[] = Array.from(files).map((file) => ({
-      file,
-      caption: "",
-      preview: URL.createObjectURL(file),
-    }));
-
-    setImages((prev) => [...prev, ...newImages]);
-  };
-
-  const removeImage = (index: number) => {
-    setImages((prev) => {
-      const newImages = [...prev];
-      URL.revokeObjectURL(newImages[index].preview);
-      newImages.splice(index, 1);
-      return newImages;
-    });
-  };
-
-  const updateCaption = (index: number, caption: string) => {
-    setImages((prev) => {
-      const newImages = [...prev];
-      newImages[index].caption = caption;
-      return newImages;
-    });
-  };
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (values: GalleryFormValues, images: ImageUpload[]) => {
     if (!isAdmin) {
       toast({
         title: "Error",
-        description: "You don't have permission to create gallery projects",
+        description: "You don't have permission to manage gallery projects",
         variant: "destructive",
       });
       return;
@@ -120,61 +114,97 @@ const EditGallery = () => {
     try {
       setIsSubmitting(true);
 
-      // Create project entry
-      const { data: project, error: projectError } = await supabase
-        .from("project_gallery")
-        .insert({
-          title: values.title,
-          description: values.description,
-          date: values.date,
-        })
-        .select()
-        .single();
+      // Handle project update or creation
+      const { data: project, error: projectError } = projectId
+        ? await supabase
+            .from("project_gallery")
+            .update({
+              title: values.title,
+              description: values.description,
+              date: values.date,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", projectId)
+            .select()
+            .single()
+        : await supabase
+            .from("project_gallery")
+            .insert({
+              title: values.title,
+              description: values.description,
+              date: values.date,
+            })
+            .select()
+            .single();
 
       if (projectError) throw projectError;
 
-      // Upload images and create gallery entries
+      // If editing, remove existing images that are not in the new set
+      if (projectId) {
+        const { error: deleteError } = await supabase
+          .from("gallery_images")
+          .delete()
+          .eq("project_gallery_id", projectId);
+
+        if (deleteError) throw deleteError;
+      }
+
+      // Upload new images and create gallery entries
       for (let i = 0; i < images.length; i++) {
         const image = images[i];
-        const fileExt = image.file.name.split(".").pop();
-        const filePath = `${crypto.randomUUID()}.${fileExt}`;
+        
+        if (image.file) {
+          // Upload new file
+          const fileExt = image.file.name.split(".").pop();
+          const filePath = `${crypto.randomUUID()}.${fileExt}`;
 
-        // Upload to storage
-        const { error: uploadError } = await supabase.storage
-          .from("gallery")
-          .upload(filePath, image.file);
+          const { error: uploadError } = await supabase.storage
+            .from("gallery")
+            .upload(filePath, image.file);
 
-        if (uploadError) throw uploadError;
+          if (uploadError) throw uploadError;
 
-        // Get public URL
-        const { data: publicUrl } = supabase.storage
-          .from("gallery")
-          .getPublicUrl(filePath);
+          const { data: publicUrl } = supabase.storage
+            .from("gallery")
+            .getPublicUrl(filePath);
 
-        // Create gallery image entry
-        const { error: galleryError } = await supabase
-          .from("gallery_images")
-          .insert({
-            project_gallery_id: project.id,
-            image_url: publicUrl.publicUrl,
-            caption: image.caption || null,
-            order_index: i,
-          });
+          // Create gallery image entry
+          const { error: galleryError } = await supabase
+            .from("gallery_images")
+            .insert({
+              project_gallery_id: project.id,
+              image_url: publicUrl.publicUrl,
+              caption: image.caption || null,
+              order_index: i,
+            });
 
-        if (galleryError) throw galleryError;
+          if (galleryError) throw galleryError;
+        } else {
+          // Re-create existing image entry
+          const { error: galleryError } = await supabase
+            .from("gallery_images")
+            .insert({
+              project_gallery_id: project.id,
+              image_url: image.preview,
+              caption: image.caption || null,
+              order_index: i,
+            });
+
+          if (galleryError) throw galleryError;
+        }
       }
 
       toast({
         title: "Success",
-        description: "Gallery project created successfully",
+        description: `Gallery project ${projectId ? "updated" : "created"} successfully`,
       });
 
-      navigate("/gallery");
+      navigate("/admin/gallery");
     } catch (error) {
-      console.error("Error creating gallery project:", error);
+      console.error("Error managing gallery project:", error);
       toast({
         title: "Error",
-        description: "Failed to create gallery project. Please try again.",
+        description: `Failed to ${projectId ? "update" : "create"} gallery project. Please try again.`,
         variant: "destructive",
       });
     } finally {
@@ -182,7 +212,7 @@ const EditGallery = () => {
     }
   };
 
-  if (isAdmin === null) {
+  if (isLoading) {
     return (
       <div className="container py-8">
         <div className="flex items-center justify-center">
@@ -207,110 +237,16 @@ const EditGallery = () => {
   return (
     <div className="container py-8">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Create New Gallery Project</h1>
+        <h1 className="text-2xl font-bold mb-6">
+          {projectId ? "Edit Gallery Project" : "Create New Gallery Project"}
+        </h1>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Project/Event Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} maxLength={150} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} maxLength={2500} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="space-y-4">
-              <div>
-                <FormLabel>Images</FormLabel>
-                <div className="mt-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => document.getElementById("image-upload")?.click()}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Images
-                  </Button>
-                  <input
-                    id="image-upload"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                    onChange={handleImageChange}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {images.map((image, index) => (
-                  <div key={index} className="relative border rounded-lg p-4">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 z-10"
-                      onClick={() => removeImage(index)}
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                    <AspectRatio ratio={4 / 3} className="mb-4 bg-gray-100 rounded-lg overflow-hidden">
-                      <img
-                        src={image.preview}
-                        alt="Preview"
-                        className="object-cover w-full h-full"
-                      />
-                    </AspectRatio>
-                    <Input
-                      placeholder="Image caption (optional)"
-                      value={image.caption}
-                      onChange={(e) => updateCaption(index, e.target.value)}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <Button type="submit" disabled={isSubmitting} className="w-full">
-              {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Create Gallery Project
-            </Button>
-          </form>
-        </Form>
+        <GalleryForm
+          defaultValues={defaultValues}
+          existingImages={existingImages}
+          isSubmitting={isSubmitting}
+          onSubmit={handleSubmit}
+        />
       </div>
     </div>
   );

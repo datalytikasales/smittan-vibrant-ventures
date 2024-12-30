@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Sidebar,
@@ -10,17 +10,43 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { LogOut, MessageSquare } from "lucide-react";
+import { LogOut, MessageSquare, Image, Plus, Loader2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/lib/supabase";
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          navigate("/admin");
+          return;
+        }
+
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("is_admin")
+          .eq("id", session.user.id)
+          .single();
+
+        if (error) throw error;
+
+        if (!profile?.is_admin) {
+          navigate("/admin");
+          return;
+        }
+
+        setIsAdmin(true);
+      } catch (error) {
+        console.error("Error checking admin status:", error);
         navigate("/admin");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -31,6 +57,26 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     await supabase.auth.signOut();
     navigate("/admin");
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="container py-8">
+        <Alert variant="destructive">
+          <AlertDescription>
+            You don't have permission to access this page.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
@@ -46,6 +92,22 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                   <a href="/admin/leads">
                     <MessageSquare className="w-4 h-4" />
                     <span>Leads</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <a href="/admin/gallery">
+                    <Image className="w-4 h-4" />
+                    <span>Gallery</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <a href="/admin/edit-gallery">
+                    <Plus className="w-4 h-4" />
+                    <span>Create New Project</span>
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>

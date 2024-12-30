@@ -14,6 +14,7 @@ import Gallery from "./pages/Gallery";
 import Login from "./pages/admin/Login";
 import Leads from "./pages/admin/Leads";
 import EditGallery from "./pages/admin/EditGallery";
+import GalleryList from "./pages/admin/GalleryList";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +29,9 @@ const App = () => (
               <AdminLayout>
                 <Routes>
                   <Route path="leads" element={<Leads />} />
+                  <Route path="gallery" element={<GalleryList />} />
                   <Route path="edit-gallery" element={<EditGallery />} />
+                  <Route path="edit-gallery/:id" element={<EditGallery />} />
                 </Routes>
               </AdminLayout>
             } />
