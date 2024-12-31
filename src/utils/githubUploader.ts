@@ -1,12 +1,12 @@
 import axios from "axios";
 
 const GITHUB_API_BASE_URL = "https://api.github.com";
-const OWNER = "datalytikasales";
-const REPO = "smittan-vibrant-ventures";
+const OWNER = "lweyajoe";
+const REPO = "myImages";
 const BRANCH = "gh-pages";
-const DIRECTORY = "public/lovable-uploads";
+const DIRECTORY = "";
 // Using a new token with correct permissions
-const TOKEN = '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';
+const TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
 
 export const uploadImageToGitHub = async (file: File): Promise<string> => {
   try {
