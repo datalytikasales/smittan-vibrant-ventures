@@ -24,6 +24,12 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        sidebar: {
+          bg: "#1A1F2C",
+          hover: "#9b87f5",
+          text: "#FFFFFF",
+          muted: "#8E9196",
+        },
         smittan: {
           50: "#F5F7FA",
           100: "#E4E7F7",

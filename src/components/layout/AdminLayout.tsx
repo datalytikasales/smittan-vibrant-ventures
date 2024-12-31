@@ -10,7 +10,13 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { LogOut, MessageSquare, Image, Plus, Loader2 } from "lucide-react";
+import { 
+  LogOut, 
+  MessageSquare, 
+  Image, 
+  Plus,
+  Loader2,
+} from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -81,7 +87,6 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!session) {
         if (mounted) {
@@ -89,14 +94,12 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           navigate("/admin");
         }
       } else {
-        // Recheck admin status on auth state change
         checkAuth();
       }
     });
 
     checkAuth();
 
-    // Cleanup
     return () => {
       mounted = false;
       subscription.unsubscribe();
@@ -119,7 +122,7 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin text-sidebar-hover" />
       </div>
     );
   }
@@ -136,53 +139,60 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
+  const menuItems = [
+    {
+      icon: MessageSquare,
+      label: "Leads",
+      href: "/admin/leads"
+    },
+    {
+      icon: Image,
+      label: "Gallery",
+      href: "/admin/gallery"
+    },
+    {
+      icon: Plus,
+      label: "Create New Project",
+      href: "/admin/edit-gallery"
+    }
+  ];
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
-        <Sidebar>
-          <SidebarHeader className="p-4">
-            <h2 className="text-lg font-semibold">Smittan Admin</h2>
+        <Sidebar className="bg-[#1A1F2C] text-white">
+          <SidebarHeader className="p-4 border-b border-white/10">
+            <h2 className="text-lg font-semibold">Admin Dashboard</h2>
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="/admin/leads">
-                    <MessageSquare className="w-4 h-4" />
-                    <span>Leads</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="/admin/gallery">
-                    <Image className="w-4 h-4" />
-                    <span>Gallery</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="/admin/edit-gallery">
-                    <Plus className="w-4 h-4" />
-                    <span>Create New Project</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.label}>
+                  <SidebarMenuButton
+                    asChild
+                    className="hover:bg-[#7E69AB]/10 transition-colors"
+                  >
+                    <a href={item.href} className="flex items-center gap-3 px-4 py-2">
+                      <item.icon className="w-5 h-5" />
+                      <span>{item.label}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarContent>
-          <div className="mt-auto p-4">
+          <div className="mt-auto p-4 border-t border-white/10">
             <Button
               variant="ghost"
-              className="w-full justify-start"
+              className="w-full justify-start text-white hover:bg-[#7E69AB]/10"
               onClick={handleLogout}
             >
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
+              <LogOut className="w-5 h-5 mr-3" />
+              Sign Out
             </Button>
           </div>
         </Sidebar>
-        <main className="flex-1 bg-gray-50">{children}</main>
+        <main className="flex-1 bg-gray-50 p-8">{children}</main>
       </div>
     </SidebarProvider>
   );

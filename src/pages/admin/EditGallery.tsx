@@ -13,7 +13,7 @@ interface ImageUpload {
 }
 
 const EditGallery = () => {
-  const { projectId } = useParams();
+  const { id } = useParams(); // Changed from projectId to id to match route param
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -40,7 +40,7 @@ const EditGallery = () => {
     };
 
     const fetchProject = async () => {
-      if (!projectId) {
+      if (!id) {
         setIsLoading(false);
         return;
       }
@@ -48,8 +48,16 @@ const EditGallery = () => {
       try {
         const { data: project, error: projectError } = await supabase
           .from("project_gallery")
-          .select("*")
-          .eq("id", projectId)
+          .select(`
+            *,
+            gallery_images (
+              id,
+              image_url,
+              caption,
+              order_index
+            )
+          `)
+          .eq("id", id)
           .single();
 
         if (projectError) throw projectError;
@@ -61,16 +69,13 @@ const EditGallery = () => {
             date: project.date || new Date().toISOString().split("T")[0],
           });
 
-          const { data: images, error: imagesError } = await supabase
-            .from("gallery_images")
-            .select("*")
-            .eq("project_gallery_id", projectId)
-            .order("order_index");
-
-          if (imagesError) throw imagesError;
+          // Sort images by order_index
+          const sortedImages = [...project.gallery_images].sort(
+            (a, b) => (a.order_index || 0) - (b.order_index || 0)
+          );
 
           setExistingImages(
-            images.map((image) => ({
+            sortedImages.map((image) => ({
               preview: image.image_url,
               caption: image.caption || "",
             }))
@@ -90,7 +95,7 @@ const EditGallery = () => {
 
     checkAdminStatus();
     fetchProject();
-  }, [projectId, navigate, toast]);
+  }, [id, navigate, toast]);
 
   const handleSubmit = async (values: GalleryFormValues, images: ImageUpload[]) => {
     if (!isAdmin) {
@@ -115,7 +120,7 @@ const EditGallery = () => {
       setIsSubmitting(true);
 
       // Handle project update or creation
-      const { data: project, error: projectError } = projectId
+      const { data: project, error: projectError } = id
         ? await supabase
             .from("project_gallery")
             .update({
@@ -124,7 +129,7 @@ const EditGallery = () => {
               date: values.date,
               updated_at: new Date().toISOString(),
             })
-            .eq("id", projectId)
+            .eq("id", id)
             .select()
             .single()
         : await supabase
@@ -140,16 +145,16 @@ const EditGallery = () => {
       if (projectError) throw projectError;
 
       // If editing, remove existing images
-      if (projectId) {
+      if (id) {
         const { error: deleteError } = await supabase
           .from("gallery_images")
           .delete()
-          .eq("project_gallery_id", projectId);
+          .eq("project_gallery_id", id);
 
         if (deleteError) throw deleteError;
       }
 
-      // Create gallery image entries with GitHub URLs
+      // Create gallery image entries
       for (let i = 0; i < images.length; i++) {
         const image = images[i];
         
@@ -157,7 +162,7 @@ const EditGallery = () => {
           .from("gallery_images")
           .insert({
             project_gallery_id: project.id,
-            image_url: image.preview, // Using the GitHub URL
+            image_url: image.preview,
             caption: image.caption || null,
             order_index: i,
           });
@@ -167,7 +172,7 @@ const EditGallery = () => {
 
       toast({
         title: "Success",
-        description: `Gallery project ${projectId ? "updated" : "created"} successfully`,
+        description: `Gallery project ${id ? "updated" : "created"} successfully`,
       });
 
       navigate("/admin/gallery");
@@ -175,7 +180,7 @@ const EditGallery = () => {
       console.error("Error managing gallery project:", error);
       toast({
         title: "Error",
-        description: `Failed to ${projectId ? "update" : "create"} gallery project. Please try again.`,
+        description: `Failed to ${id ? "update" : "create"} gallery project. Please try again.`,
         variant: "destructive",
       });
     } finally {
@@ -209,7 +214,7 @@ const EditGallery = () => {
     <div className="container py-8">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">
-          {projectId ? "Edit Gallery Project" : "Create New Gallery Project"}
+          {id ? "Edit Gallery Project" : "Create New Gallery Project"}
         </h1>
 
         <GalleryForm

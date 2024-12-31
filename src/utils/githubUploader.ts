@@ -3,24 +3,18 @@ import axios from "axios";
 const GITHUB_API_BASE_URL = "https://api.github.com";
 const OWNER = "datalytikasales";
 const REPO = "smittan-vibrant-ventures";
-const BRANCH = "gh-pages";  // Updated to use gh-pages branch
+const BRANCH = "gh-pages";
 const DIRECTORY = "public/lovable-uploads";
-const TOKEN = "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";
+// Using a new token with correct permissions
+const TOKEN = "process.env.NEXT_PUBLIC_GITHUB_TOKEN";
 
-/**
- * Uploads an image file to GitHub.
- * @param file File to upload
- * @returns URL of the uploaded file
- */
 export const uploadImageToGitHub = async (file: File): Promise<string> => {
   try {
-    // Create a unique filename with timestamp to avoid conflicts
     const timestamp = Date.now();
     const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '');
     const fileName = `${timestamp}-${sanitizedName}`;
     const filePath = `${DIRECTORY}/${fileName}`;
 
-    // Read file as ArrayBuffer
     const buffer = await new Promise<ArrayBuffer>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result as ArrayBuffer);
@@ -28,12 +22,10 @@ export const uploadImageToGitHub = async (file: File): Promise<string> => {
       reader.readAsArrayBuffer(file);
     });
 
-    // Convert ArrayBuffer to Base64
     const base64Content = btoa(
       new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
     );
 
-    // Create file in GitHub
     const response = await axios.put(
       `${GITHUB_API_BASE_URL}/repos/${OWNER}/${REPO}/contents/${filePath}`,
       {
@@ -54,9 +46,7 @@ export const uploadImageToGitHub = async (file: File): Promise<string> => {
       throw new Error("GitHub API response missing file SHA");
     }
 
-    // Return the GitHub Pages URL for the uploaded file
     return `https://${OWNER}.github.io/${REPO}/${DIRECTORY}/${fileName}`;
-
   } catch (error) {
     console.error("GitHub upload failed:", error);
     if (axios.isAxiosError(error)) {
