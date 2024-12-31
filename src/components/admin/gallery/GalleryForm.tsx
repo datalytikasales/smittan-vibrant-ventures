@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUploadPreview } from "./ImageUploadPreview";
+import { uploadImageToGitHub } from "@/utils/githubUploader";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   title: z.string().min(1).max(150, "Title must not exceed 150 characters"),
@@ -44,6 +46,7 @@ export const GalleryForm = ({
   onSubmit,
 }: GalleryFormProps) => {
   const [images, setImages] = React.useState<ImageUpload[]>(existingImages);
+  const { toast } = useToast();
 
   const form = useForm<GalleryFormValues>({
     resolver: zodResolver(formSchema),
@@ -87,7 +90,27 @@ export const GalleryForm = ({
   };
 
   const handleSubmit = async (values: GalleryFormValues) => {
-    await onSubmit(values, images);
+    try {
+      // Upload images to GitHub and get their URLs
+      const uploadedImages = await Promise.all(
+        images.map(async (image) => {
+          if (image.file) {
+            const url = await uploadImageToGitHub(image.file);
+            return { ...image, preview: url };
+          }
+          return image;
+        })
+      );
+
+      await onSubmit(values, uploadedImages);
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to upload images. Please try again.",
+      });
+    }
   };
 
   return (

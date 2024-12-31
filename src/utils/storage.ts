@@ -32,17 +32,13 @@ export const uploadGalleryImage = async (file: File): Promise<string> => {
     const fileExt = file.name.split('.').pop();
     const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
-    // Create a new File object with the correct content type
-    const fileWithType = new File([file], fileName, {
-      type: file.type
-    });
-
-    // Upload file with explicit content type
-    const { error: uploadError } = await supabase.storage
+    // Upload file with explicit content type and metadata
+    const { data, error: uploadError } = await supabase.storage
       .from('gallery')
-      .upload(fileName, fileWithType, {
+      .upload(fileName, file, {
         cacheControl: '3600',
-        upsert: true
+        contentType: file.type,
+        upsert: false,
       });
 
     if (uploadError) {

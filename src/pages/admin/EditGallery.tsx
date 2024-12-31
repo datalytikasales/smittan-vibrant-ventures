@@ -5,7 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { GalleryForm, type GalleryFormValues } from "@/components/admin/gallery/GalleryForm";
-import { uploadGalleryImage } from "@/utils/storage";
 
 interface ImageUpload {
   file?: File;
@@ -140,7 +139,7 @@ const EditGallery = () => {
 
       if (projectError) throw projectError;
 
-      // If editing, remove existing images that are not in the new set
+      // If editing, remove existing images
       if (projectId) {
         const { error: deleteError } = await supabase
           .from("gallery_images")
@@ -150,22 +149,15 @@ const EditGallery = () => {
         if (deleteError) throw deleteError;
       }
 
-      // Upload new images and create gallery entries
+      // Create gallery image entries with GitHub URLs
       for (let i = 0; i < images.length; i++) {
         const image = images[i];
-        let imageUrl = image.preview;
         
-        if (image.file) {
-          // Upload new file using the utility function
-          imageUrl = await uploadGalleryImage(image.file);
-        }
-
-        // Create gallery image entry
         const { error: galleryError } = await supabase
           .from("gallery_images")
           .insert({
             project_gallery_id: project.id,
-            image_url: imageUrl,
+            image_url: image.preview, // Using the GitHub URL
             caption: image.caption || null,
             order_index: i,
           });

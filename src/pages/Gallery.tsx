@@ -10,7 +10,7 @@ interface GalleryProject {
   title: string;
   description: string | null;
   date: string | null;
-  gallery_images: {  // Changed from 'images' to 'gallery_images' to match Supabase response
+  gallery_images: {
     id: string;
     image_url: string;
     caption: string | null;
@@ -40,7 +40,17 @@ const Gallery = () => {
 
       if (projectsError) throw projectsError;
 
-      return projectsData as GalleryProject[];
+      // Transform the data to use GitHub Pages URLs if needed
+      return projectsData?.map(project => ({
+        ...project,
+        gallery_images: project.gallery_images?.map(image => ({
+          ...image,
+          image_url: image.image_url.replace(
+            /^https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/[^/]+\//,
+            'https://datalytikasales.github.io/smittan-vibrant-ventures/'
+          )
+        }))
+      })) as GalleryProject[];
     },
   });
 
@@ -79,7 +89,7 @@ const Gallery = () => {
       <div className="container py-12">
         <div className="space-y-16">
           {projects?.map((project) => {
-            const sortedImages = [...(project.gallery_images || [])].sort(  // Changed from project.images to project.gallery_images
+            const sortedImages = [...(project.gallery_images || [])].sort(
               (a, b) => (a.order_index || 0) - (b.order_index || 0)
             );
 
