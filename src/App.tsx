@@ -1,25 +1,31 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { AdminLayout } from "@/components/layout/AdminLayout";
+import { PublicLayout } from "@/components/layout/PublicLayout";
 import Login from "@/pages/admin/Login";
 import Leads from "@/pages/admin/Leads";
 import GalleryList from "@/pages/admin/GalleryList";
 import EditGallery from "@/pages/admin/EditGallery";
 import WebsiteGuide from "@/pages/admin/WebsiteGuide";
 import RegisterAdmin from "@/pages/admin/RegisterAdmin";
-import Home from "@/pages/Home";
+import Index from "@/pages/Index";
 import Gallery from "@/pages/Gallery";
 import Contact from "@/pages/Contact";
 import About from "@/pages/About";
+import Services from "@/pages/Services";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<About />} />
+        {/* Public routes with PublicLayout */}
+        <Route element={<PublicLayout><Outlet /></PublicLayout>}>
+          <Route path="/" element={<Index />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
+        </Route>
         
         {/* Admin routes */}
         <Route path="/admin" element={<Login />} />

@@ -54,7 +54,7 @@ const Index = () => {
                   <p className="text-gray-600">{service.description}</p>
                   <Button variant="link" className="text-smittan-600 p-0 h-auto font-semibold" asChild>
                     <Link to="/services">
-                      Learn More in the services page
+                      Learn More
                       <ChevronRight className="ml-1 h-4 w-4" />
                     </Link>
                   </Button>
