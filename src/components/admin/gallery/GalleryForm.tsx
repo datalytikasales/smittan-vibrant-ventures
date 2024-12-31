@@ -91,24 +91,40 @@ export const GalleryForm = ({
 
   const handleSubmit = async (values: GalleryFormValues) => {
     try {
+      if (images.length === 0) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please add at least one image.",
+        });
+        return;
+      }
+
       // Upload images to GitHub and get their URLs
       const uploadedImages = await Promise.all(
-        images.map(async (image) => {
+        images.map(async (image, index) => {
           if (image.file) {
-            const url = await uploadImageToGitHub(image.file);
-            return { ...image, preview: url };
+            try {
+              console.log(`Uploading image ${index + 1}/${images.length}`);
+              const url = await uploadImageToGitHub(image.file);
+              console.log(`Successfully uploaded image ${index + 1}:`, url);
+              return { ...image, preview: url };
+            } catch (error: any) {
+              console.error(`Failed to upload image ${index + 1}:`, error);
+              throw new Error(`Failed to upload image ${index + 1}: ${error.message}`);
+            }
           }
           return image;
         })
       );
 
       await onSubmit(values, uploadedImages);
-    } catch (error) {
-      console.error("Error uploading images:", error);
+    } catch (error: any) {
+      console.error("Form submission error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to upload images. Please try again.",
+        description: error.message || "Failed to upload images. Please try again.",
       });
     }
   };

@@ -1,62 +1,43 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Navbar } from "./components/layout/Navbar";
-import { Footer } from "./components/layout/Footer";
-import { AdminLayout } from "./components/layout/AdminLayout";
-import Index from "./pages/Index";
-import About from "./pages/About";
-import Services from "./pages/Services";
-import Contact from "./pages/Contact";
-import Gallery from "./pages/Gallery";
-import Login from "./pages/admin/Login";
-import Leads from "./pages/admin/Leads";
-import EditGallery from "./pages/admin/EditGallery";
-import GalleryList from "./pages/admin/GalleryList";
+import { AdminLayout } from "@/components/layout/AdminLayout";
+import Login from "@/pages/admin/Login";
+import Leads from "@/pages/admin/Leads";
+import GalleryList from "@/pages/admin/GalleryList";
+import EditGallery from "@/pages/admin/EditGallery";
+import WebsiteGuide from "@/pages/admin/WebsiteGuide";
+import RegisterAdmin from "@/pages/admin/RegisterAdmin";
+import Home from "@/pages/Home";
+import Gallery from "@/pages/Gallery";
+import Contact from "@/pages/Contact";
+import About from "@/pages/About";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <BrowserRouter>
-        <div className="min-h-screen flex flex-col">
-          <Routes>
-            <Route path="/admin" element={<Login />} />
-            <Route path="/admin/*" element={
-              <AdminLayout>
-                <Routes>
-                  <Route path="leads" element={<Leads />} />
-                  <Route path="gallery" element={<GalleryList />} />
-                  <Route path="edit-gallery" element={<EditGallery />} />
-                  <Route path="edit-gallery/:id" element={<EditGallery />} />
-                </Routes>
-              </AdminLayout>
-            } />
-            <Route path="/*" element={
-              <>
-                <Navbar />
-                <main className="flex-grow">
-                  <Routes>
-                    <Route index element={<Index />} />
-                    <Route path="about" element={<About />} />
-                    <Route path="services" element={<Services />} />
-                    <Route path="contact" element={<Contact />} />
-                    <Route path="gallery" element={<Gallery />} />
-                  </Routes>
-                </main>
-                <Footer />
-              </>
-            } />
-          </Routes>
-        </div>
-      </BrowserRouter>
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
+        
+        {/* Admin routes */}
+        <Route path="/admin" element={<Login />} />
+        <Route path="/admin/*" element={
+          <AdminLayout>
+            <Outlet />
+          </AdminLayout>
+        }>
+          <Route path="leads" element={<Leads />} />
+          <Route path="gallery" element={<GalleryList />} />
+          <Route path="edit-gallery" element={<EditGallery />} />
+          <Route path="website-guide" element={<WebsiteGuide />} />
+          <Route path="register" element={<RegisterAdmin />} />
+        </Route>
+      </Routes>
       <Toaster />
-      <Sonner />
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </BrowserRouter>
+  );
+}
 
 export default App;

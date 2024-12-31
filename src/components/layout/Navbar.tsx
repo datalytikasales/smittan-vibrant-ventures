@@ -1,5 +1,6 @@
-import { Phone, Mail, Facebook, Linkedin, Twitter } from "lucide-react";
+import { Phone, Mail, Facebook, Linkedin, Twitter, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export const Navbar = () => {
   return (
@@ -8,13 +9,13 @@ export const Navbar = () => {
       <div className="bg-smittan-600 text-white py-2">
         <div className="container flex justify-between items-center">
           <div className="flex items-center space-x-6">
-            <a href="tel:+254700000000" className="flex items-center space-x-2 text-sm hover:text-smittan-200 transition-colors">
+            <a href="tel:+254704444724" className="flex items-center space-x-2 text-sm hover:text-smittan-200 transition-colors">
               <Phone size={16} />
-              <span>+254 700 000 000</span>
+              <span>+254704444724</span>
             </a>
-            <a href="mailto:info@smittan.com" className="flex items-center space-x-2 text-sm hover:text-smittan-200 transition-colors">
+            <a href="mailto:admin@smittan.co.ke" className="flex items-center space-x-2 text-sm hover:text-smittan-200 transition-colors">
               <Mail size={16} />
-              <span>info@smittan.com</span>
+              <span>admin@smittan.co.ke</span>
             </a>
           </div>
           <div className="flex items-center space-x-4">
@@ -44,6 +45,12 @@ export const Navbar = () => {
             <Link to="/about" className="nav-link">About</Link>
             <Link to="/gallery" className="nav-link">Gallery</Link>
             <Link to="/contact" className="nav-link">Contact</Link>
+            <Link to="/admin">
+              <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <LogIn className="h-4 w-4" />
+                Admin Login
+              </Button>
+            </Link>
           </div>
           
           <button className="md:hidden">

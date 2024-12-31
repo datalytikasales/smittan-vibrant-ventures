@@ -82,7 +82,11 @@ const Contact = () => {
                 <MapPin className="w-6 h-6 text-smittan-600 mt-1" />
                 <div>
                   <h3 className="font-semibold mb-1">Our Location</h3>
-                  <p className="text-gray-600">Nairobi, Kenya</p>
+                  <p className="text-gray-600">
+                    Ruaka Town, Kiambu County, Kenya
+                    <br />
+                    P.O Box 55534-00200 Nairobi Kenya
+                  </p>
                 </div>
               </div>
               
@@ -90,7 +94,7 @@ const Contact = () => {
                 <Phone className="w-6 h-6 text-smittan-600 mt-1" />
                 <div>
                   <h3 className="font-semibold mb-1">Phone</h3>
-                  <p className="text-gray-600">+254 700 000 000</p>
+                  <p className="text-gray-600">+254704444724 / +254704698288</p>
                 </div>
               </div>
               
@@ -98,7 +102,7 @@ const Contact = () => {
                 <Mail className="w-6 h-6 text-smittan-600 mt-1" />
                 <div>
                   <h3 className="font-semibold mb-1">Email</h3>
-                  <p className="text-gray-600">info@smittan.com</p>
+                  <p className="text-gray-600">admin@smittan.co.ke</p>
                 </div>
               </div>
             </div>

@@ -16,6 +16,8 @@ import {
   Image, 
   Plus,
   Loader2,
+  BookOpen,
+  UserPlus,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/lib/supabase";
@@ -154,6 +156,16 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       icon: Plus,
       label: "Create New Project",
       href: "/admin/edit-gallery"
+    },
+    {
+      icon: BookOpen,
+      label: "Guide Through Your Website",
+      href: "/admin/website-guide"
+    },
+    {
+      icon: UserPlus,
+      label: "Register New Admin",
+      href: "/admin/register"
     }
   ];
 

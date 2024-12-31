@@ -1,57 +1,84 @@
 import axios from "axios";
 
-const GITHUB_API_BASE_URL = "https://api.github.com";
 const OWNER = "lweyajoe";
 const REPO = "myImages";
 const BRANCH = "gh-pages";
 const DIRECTORY = "";
-// Using a new token with correct permissions
-const TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+const TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
-export const uploadImageToGitHub = async (file: File): Promise<string> => {
+const generateUniqueFilename = (originalName: string): string => {
+  const timestamp = Date.now();
+  const randomString = crypto.randomUUID().split('-')[0]; // Using UUID for better uniqueness
+  const sanitizedName = originalName.replace(/[^a-zA-Z0-9.-]/g, '');
+  return `${timestamp}-${randomString}-${sanitizedName}`;
+};
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const uploadImageToGitHub = async (file: File, retryCount = 3): Promise<string> => {
   try {
-    const timestamp = Date.now();
-    const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '');
-    const fileName = `${timestamp}-${sanitizedName}`;
-    const filePath = `${DIRECTORY}/${fileName}`;
+    console.log("Starting GitHub upload for file:", file.name);
+    
+    const fileName = generateUniqueFilename(file.name);
+    const filePath = DIRECTORY ? `${DIRECTORY}/${fileName}` : fileName;
+
+    console.log("Generated unique file path:", filePath);
 
     const buffer = await new Promise<ArrayBuffer>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result as ArrayBuffer);
-      reader.onerror = reject;
+      reader.onerror = (error) => {
+        console.error("FileReader error:", error);
+        reject(error);
+      };
       reader.readAsArrayBuffer(file);
     });
 
     const base64Content = btoa(
-      new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+      Array.from(new Uint8Array(buffer))
+        .map(byte => String.fromCharCode(byte))
+        .join('')
     );
 
-    const response = await axios.put(
-      `${GITHUB_API_BASE_URL}/repos/${OWNER}/${REPO}/contents/${filePath}`,
-      {
-        message: `Upload ${fileName}`,
-        content: base64Content,
-        branch: BRANCH,
-      },
-      {
-        headers: {
-          Authorization: `token ${TOKEN}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/vnd.github.v3+json',
+    console.log("File converted to base64, attempting upload...");
+
+    try {
+      const response = await axios.put(
+        `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filePath}`,
+        {
+          message: `Upload ${fileName}`,
+          content: base64Content,
+          branch: BRANCH,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.data.content?.sha) {
+        throw new Error("GitHub API response missing file SHA");
       }
-    );
 
-    if (!response.data.content?.sha) {
-      throw new Error("GitHub API response missing file SHA");
+      console.log("File uploaded successfully");
+      
+      const ghPagesUrl = `https://${OWNER}.github.io/${REPO}/${filePath}`;
+      console.log("Generated GitHub Pages URL:", ghPagesUrl);
+      
+      return ghPagesUrl;
+    } catch (error: any) {
+      if (error.response?.status === 409 && retryCount > 0) {
+        console.log(`Upload conflict detected, retrying... (${retryCount} attempts remaining)`);
+        await delay(1000); // Wait 1 second before retrying
+        return uploadImageToGitHub(file, retryCount - 1);
+      }
+      throw error;
     }
-
-    return `https://${OWNER}.github.io/${REPO}/${DIRECTORY}/${fileName}`;
-  } catch (error) {
+  } catch (error: any) {
     console.error("GitHub upload failed:", error);
-    if (axios.isAxiosError(error)) {
-      console.error("Response data:", error.response?.data);
-    }
-    throw new Error("Failed to upload image to GitHub.");
+    console.error("Error details:", error.response?.data || error.message);
+    throw new Error(`Failed to upload image to GitHub: ${error.message}`);
   }
 };
