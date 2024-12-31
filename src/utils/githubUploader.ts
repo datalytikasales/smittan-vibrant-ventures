@@ -6,7 +6,7 @@ const REPO = "smittan-vibrant-ventures";
 const BRANCH = "gh-pages";
 const DIRECTORY = "public/lovable-uploads";
 // Using a new token with correct permissions
-const TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+const TOKEN = "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";
 
 export const uploadImageToGitHub = async (file: File): Promise<string> => {
   try {
