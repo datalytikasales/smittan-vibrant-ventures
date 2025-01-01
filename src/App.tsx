@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import Login from "@/pages/admin/Login";
+import ResetPassword from "@/pages/admin/ResetPassword";
 import Leads from "@/pages/admin/Leads";
 import GalleryList from "@/pages/admin/GalleryList";
 import EditGallery from "@/pages/admin/EditGallery";
@@ -29,6 +30,7 @@ function App() {
         
         {/* Admin routes */}
         <Route path="/admin" element={<Login />} />
+        <Route path="/admin/reset-password" element={<ResetPassword />} />
         <Route path="/admin/*" element={
           <AdminLayout>
             <Outlet />
