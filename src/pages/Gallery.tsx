@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { PageHero } from "@/components/layout/PageHero";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -94,21 +94,23 @@ const Gallery = () => {
             );
 
             return (
-              <div key={project.id} className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                    {project.title}
-                  </h2>
-                  {project.date && (
-                    <p className="text-sm text-gray-500 mb-3">
-                      {format(new Date(project.date), "MMMM d, yyyy")}
-                    </p>
-                  )}
-                  {project.description && (
-                    <p className="text-gray-600 max-w-3xl">
-                      {project.description}
-                    </p>
-                  )}
+              <div key={project.id}>
+                <div className="bg-white shadow-sm mb-8 w-full">
+                  <div className="py-6 px-6">
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      {project.title}
+                    </h2>
+                    {project.date && (
+                      <p className="text-sm text-gray-500 mt-2">
+                        {format(new Date(project.date), "MMMM d, yyyy")}
+                      </p>
+                    )}
+                    {project.description && (
+                      <p className="text-gray-600 mt-3">
+                        {project.description}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {sortedImages.map((image) => (

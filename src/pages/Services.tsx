@@ -1,11 +1,11 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { 
   MapPin, Target, Megaphone, 
   BarChart2, Wallet, ArrowRight
 } from "lucide-react";
-import { Link } from "react-router-dom";
 
 const services = [
   {
@@ -74,12 +74,16 @@ const Services = () => {
       />
       
       <div className="container py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-smittan-800">Strategic Business Solutions</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            We provide end-to-end business solutions that help organizations identify opportunities, 
-            optimize operations, and achieve sustainable growth in their target markets.
-          </p>
+        <div className="bg-white shadow-sm -mt-8 mb-12 w-full">
+          <div className="py-8">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold mb-4 text-smittan-800">Strategic Business Solutions</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                We provide end-to-end business solutions that help organizations identify opportunities, 
+                optimize operations, and achieve sustainable growth in their target markets.
+              </p>
+            </div>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -89,8 +93,8 @@ const Services = () => {
               className="hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-smittan-600"
             >
               <CardContent className="p-6">
-                <div className="bg-smittan-50 p-3 rounded-full w-fit mb-4">
-                  <service.icon className="h-8 w-8 text-smittan-600" />
+                <div className="bg-[#F97316]/10 p-3 rounded-full w-fit mb-4">
+                  <service.icon className="h-8 w-8 text-[#F97316]" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3 text-smittan-800">{service.title}</h3>
                 <p className="text-gray-600 mb-4 min-h-[60px]">{service.description}</p>

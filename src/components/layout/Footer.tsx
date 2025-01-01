@@ -1,4 +1,5 @@
-import { Facebook, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react";
+import { Download, Facebook, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const Footer = () => {
   return (
@@ -62,17 +63,27 @@ export const Footer = () => {
           </div>
           
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold">Connect With Us</h3>
-            <div className="flex space-x-4">
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-300 transition-colors">
-                <Linkedin size={24} />
-              </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-300 transition-colors">
-                <Facebook size={24} />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-300 transition-colors">
-                <Twitter size={24} />
-              </a>
+            <h3 className="text-xl font-semibold">Resources & Connect</h3>
+            <div className="space-y-4">
+              <Button 
+                variant="default" 
+                className="w-full justify-start"
+                onClick={() => window.open('/lovable-uploads/Profile-Smittan.pptx', '_blank')}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download Company Profile
+              </Button>
+              <div className="flex space-x-4">
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-300 transition-colors">
+                  <Linkedin size={24} />
+                </a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-300 transition-colors">
+                  <Facebook size={24} />
+                </a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-300 transition-colors">
+                  <Twitter size={24} />
+                </a>
+              </div>
             </div>
           </div>
         </div>

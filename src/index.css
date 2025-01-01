@@ -13,7 +13,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
     
-    --primary: 240 53% 38%;
+    --primary: 24 94% 53%;
     --primary-foreground: 210 40% 98%;
     
     --secondary: 240 5% 96%;
@@ -30,7 +30,7 @@
     
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: 240 53% 38%;
+    --ring: 24 94% 53%;
     
     --radius: 0.5rem;
 
@@ -50,11 +50,11 @@
 
 @layer components {
   .nav-link {
-    @apply relative px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-smittan-600;
+    @apply relative px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-[#F97316];
   }
   
   .nav-link::after {
-    @apply content-[''] absolute left-0 bottom-0 w-full h-0.5 bg-smittan-600 scale-x-0 transition-transform duration-300 origin-bottom-right;
+    @apply content-[''] absolute left-0 bottom-0 w-full h-0.5 bg-[#F97316] scale-x-0 transition-transform duration-300 origin-bottom-right;
   }
   
   .nav-link:hover::after {

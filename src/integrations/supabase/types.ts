@@ -187,7 +187,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      set_claim: {
+        Args: {
+          uid: string
+          claim: string
+          value: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

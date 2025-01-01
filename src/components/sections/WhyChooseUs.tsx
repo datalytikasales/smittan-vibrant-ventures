@@ -44,13 +44,6 @@ export const WhyChooseUs = () => {
   return (
     <section className="section-padding bg-white">
       <div className="container">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-3xl font-bold mb-4">Why Choose Us</h2>
-          <p className="text-gray-600">
-            Discover what makes Smittan Solutions your ideal business partner
-          </p>
-        </div>
-
         {/* Top row - 3 cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {whyChooseUs.slice(0, 3).map((item, index) => (

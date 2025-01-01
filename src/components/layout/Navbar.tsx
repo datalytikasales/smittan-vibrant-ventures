@@ -9,23 +9,23 @@ export const Navbar = () => {
       <div className="bg-smittan-600 text-white py-2">
         <div className="container flex justify-between items-center">
           <div className="flex items-center space-x-6">
-            <a href="tel:+254704444724" className="flex items-center space-x-2 text-sm hover:text-smittan-200 transition-colors">
-              <Phone size={16} />
+            <a href="tel:+254704444724" className="flex items-center space-x-2 text-sm hover:text-[#F97316] transition-colors">
+              <Phone size={16} className="text-[#F97316]" />
               <span>+254704444724</span>
             </a>
-            <a href="mailto:admin@smittan.co.ke" className="flex items-center space-x-2 text-sm hover:text-smittan-200 transition-colors">
-              <Mail size={16} />
+            <a href="mailto:admin@smittan.co.ke" className="flex items-center space-x-2 text-sm hover:text-[#F97316] transition-colors">
+              <Mail size={16} className="text-[#F97316]" />
               <span>admin@smittan.co.ke</span>
             </a>
           </div>
           <div className="flex items-center space-x-4">
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-200 transition-colors">
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#F97316] transition-colors">
               <Linkedin size={16} />
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-200 transition-colors">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#F97316] transition-colors">
               <Facebook size={16} />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-200 transition-colors">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#F97316] transition-colors">
               <Twitter size={16} />
             </a>
           </div>
