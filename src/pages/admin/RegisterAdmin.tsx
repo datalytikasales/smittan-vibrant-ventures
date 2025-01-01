@@ -17,26 +17,34 @@ const RegisterAdmin = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      // First, create the user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: {
-            is_admin: true,
-          },
-        },
       });
 
-      if (error) throw error;
+      if (authError) throw authError;
 
-      if (data.user) {
-        // Update the profile to set is_admin to true
+      if (authData.user) {
+        // Then update the profiles table to set is_admin to true
         const { error: profileError } = await supabase
           .from('profiles')
-          .update({ is_admin: true })
-          .eq('id', data.user.id);
+          .update({ 
+            is_admin: true,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', authData.user.id);
 
         if (profileError) throw profileError;
+
+        // Finally, set the user's role to admin in auth.users
+        const { error: roleError } = await supabase.rpc('set_claim', {
+          uid: authData.user.id,
+          claim: 'role',
+          value: 'admin'
+        });
+
+        if (roleError) throw roleError;
 
         toast({
           title: "Success",

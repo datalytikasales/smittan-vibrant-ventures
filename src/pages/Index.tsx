@@ -1,7 +1,8 @@
-import { ArrowRight, ChevronRight, Leaf, Shield, Heart, Users, Globe, Target } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
 
 const Index = () => {
   return (
@@ -22,11 +23,15 @@ const Index = () => {
             </p>
             <div className="flex space-x-4">
               <Button size="lg" className="bg-white text-smittan-600 hover:bg-gray-100">
-                Get Started
+                <Link to="/services">
+                      Get Started
+                    </Link>
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                Learn More
+                <Link to="/about">
+                      Learn More
+                    </Link>
               </Button>
             </div>
           </div>
@@ -66,33 +71,7 @@ const Index = () => {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="section-padding bg-white">
-        <div className="container">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-3xl font-bold mb-4">Why Choose Us</h2>
-            <p className="text-gray-600">
-              Discover what makes Smittan Solutions your ideal business partner
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {whyChooseUs.map((item, index) => (
-              <div key={index} className="p-6 bg-gray-50 rounded-lg hover:shadow-lg transition-shadow">
-                <div className="w-16 h-16 mb-6 bg-smittan-100 rounded-full flex items-center justify-center mx-auto">
-                  <item.icon className="h-8 w-8 text-smittan-600" />
-                </div>
-                <h3 className="text-xl font-semibold mb-4 text-center">{item.title}</h3>
-                <p className="text-gray-600 text-center">{item.description}</p>
-                {item.stats && (
-                  <div className="mt-4 text-center">
-                    <span className="text-2xl font-bold text-smittan-600">{item.stats}</span>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <WhyChooseUs />
 
       {/* CTA Section */}
       <section className="section-padding bg-smittan-600 text-white">
@@ -128,36 +107,6 @@ const services = [
     description: "Develop a strong brand identity that sets you apart from the competition.",
     icon: ChevronRight,
   },
-];
-
-const whyChooseUs = [
-  {
-    icon: Leaf,
-    title: "Sustainability Practices",
-    description: "We prioritize responsible sourcing of skilled talent, uphold integrity, and implement best practices to ensure 100% fulfillment of our promises to clients.",
-    stats: "100% Fulfillment"
-  },
-  {
-    icon: Shield,
-    title: "Quality Assurance",
-    description: "Stringent quality control measures are ingrained in our processes, guaranteeing consistency and integrity in every project ensuring 100% delivery of our objectives.",
-    stats: "100% Delivery"
-  },
-  {
-    icon: Heart,
-    title: "Customer Satisfaction",
-    description: "Customer satisfaction forms the cornerstone of our business ethos. We are committed to surpassing expectations through competitive pricing and proactive support."
-  },
-  {
-    icon: Users,
-    title: "Community Engagement",
-    description: "As a socially conscious entity, we actively engage with local communities, empowering small businesses through training, market access, and market insights."
-  },
-  {
-    icon: Globe,
-    title: "Future Plans",
-    description: "We envision expanding our operations across Africa, acquiring more businesses and delivering lasting solutions in sales and marketing for sustainable partner growth."
-  }
 ];
 
 export default Index;

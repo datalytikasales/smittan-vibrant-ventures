@@ -35,3 +35,33 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Create the set_claim function for managing user roles
+CREATE OR REPLACE FUNCTION set_claim(
+  uid uuid,
+  claim text,
+  value text
+)
+RETURNS text
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE id = uid) THEN
+    RAISE EXCEPTION 'User not found';
+  END IF;
+
+  UPDATE auth.users
+  SET raw_app_meta_data = 
+    raw_app_meta_data || 
+    json_build_object(claim, value)::jsonb
+  WHERE id = uid;
+  
+  RETURN 'OK';
+END;
+$$;
+
+-- Grant execute permission on the set_claim function
+GRANT EXECUTE ON FUNCTION set_claim TO authenticated;
+GRANT EXECUTE ON FUNCTION set_claim TO service_role;
