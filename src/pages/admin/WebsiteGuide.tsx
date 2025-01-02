@@ -111,7 +111,7 @@ const WebsiteGuide = () => {
             <p>Hosting Package: $20 Annual Fee</p>
             <p>Next Payment Date: 02.01.2026</p>
             <p>Domain: smittan.co.ke</p>
-            <br></br>
+            <br><br>
             <p>Emails Host: https://mail.zoho.com</p>
             <p>Emails: jgikunda@smittan.co.ke, bkariuki@smittan.co.ke, admin@smittan.co.ke</p>
             <p>NB: Set Up The Emails With 'Like2024!' as the first password. Please change the passwords after the first log in.</p>
