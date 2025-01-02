@@ -40,6 +40,7 @@ function App() {
           <Route path="leads" element={<Leads />} />
           <Route path="gallery" element={<GalleryList />} />
           <Route path="edit-gallery" element={<EditGallery />} />
+          <Route path="edit-gallery/:id" element={<EditGallery />} /> {/* Added this route */}
           <Route path="website-guide" element={<WebsiteGuide />} />
           <Route path="register" element={<RegisterAdmin />} />
           <Route path="company-profile" element={<UpdateCompanyProfile />} />
