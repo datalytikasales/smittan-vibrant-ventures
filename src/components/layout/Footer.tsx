@@ -97,8 +97,8 @@ export const Footer = () => {
           </div>
         </div>
         
-        <div className="mt-12 pt-8 border-t border-smittan-800 text-center text-sm text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Smittan Solutions Limited. All rights reserved.</p>
+        <div className="mt-12 pt-8 border-t border-smittan-800 text-center text-sm">
+          <p className="text-[#F97316]">&copy; {new Date().getFullYear()} Smittan Solutions Limited. All rights reserved.</p>
         </div>
       </div>
     </footer>

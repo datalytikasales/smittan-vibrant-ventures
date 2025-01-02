@@ -1,4 +1,4 @@
-import { BookOpen, Home, Users, Phone, Image, MessageSquare, Settings } from "lucide-react";
+import { BookOpen, Home, Users, Phone, Image, MessageSquare, Settings, FileText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -41,6 +41,11 @@ const WebsiteGuide = () => {
       title: "Gallery Management",
       icon: Image,
       description: "Add, edit, or remove projects from the gallery. Upload new images, update project descriptions, and maintain an up-to-date portfolio of your work."
+    },
+    {
+      title: "Company Profile Management",
+      icon: FileText,
+      description: "Upload and manage the company profile document. This feature allows you to keep your downloadable company profile up to date, ensuring visitors always have access to the latest version."
     }
   ];
 
