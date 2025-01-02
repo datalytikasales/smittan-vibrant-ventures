@@ -46,7 +46,7 @@ const About = () => {
             <div className="space-y-4 text-gray-600">
               <p>
                 Founded with a vision to transform how businesses approach growth and market expansion, 
-                Smittan Solutions has emerged as a leading business development agency in Kenya.
+                Smittan Solutions has emerged as a leading business development agency.
               </p>
               <p>
                 Our journey began with a simple yet powerful idea: to provide comprehensive business 
