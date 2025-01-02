@@ -103,6 +103,7 @@ const WebsiteGuide = () => {
             <p>This website is maintained by Squarehaul Limited</p>
             <p>Email: admin@squarehaul.online</p>
             <p>Phone: 0717158091</p>
+            <p>Please reach out for any queries, guidance, changes, upgrade etc</p>
           </div>
           <div>
             <p className="font-medium mb-2">Hosting Information:</p>
@@ -110,6 +111,9 @@ const WebsiteGuide = () => {
             <p>Hosting Package: $20 Annual Fee</p>
             <p>Next Payment Date: 02.01.2026</p>
             <p>Domain: smittan.co.ke</p>
+            <p>Emails Host: https://mail.zoho.com</p>
+            <p>Emails: jgikunda@smittan.co.ke, bkariuki@smittan.co.ke, admin@smittan.co.ke</p>
+            <p>NB:Set Up The Emails With 'Like2024!' as the first password. Please change the passwords after the first log in.</p>
           </div>
         </AlertDescription>
       </Alert>
