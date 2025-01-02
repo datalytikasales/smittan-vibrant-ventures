@@ -45,6 +45,12 @@ export const Navbar = () => {
             <Link to="/about" className="nav-link">About</Link>
             <Link to="/gallery" className="nav-link">Gallery</Link>
             <Link to="/contact" className="nav-link">Contact</Link>
+            <a href="https://mail.zoho.com" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                Admin Mail
+              </Button>
+            </a>
             <Link to="/admin">
               <Button variant="outline" size="sm" className="flex items-center gap-2">
                 <LogIn className="h-4 w-4" />

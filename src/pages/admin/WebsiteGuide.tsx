@@ -97,11 +97,20 @@ const WebsiteGuide = () => {
       </div>
 
       <Alert>
-        <AlertDescription className="text-sm">
-          <p className="font-medium mb-2">Website Maintenance Services:</p>
-          <p>This website is maintained by Squarehaul Limited</p>
-          <p>Email: admin@squarehaul.online</p>
-          <p>Phone: 0717158091</p>
+        <AlertDescription className="text-sm space-y-4">
+          <div>
+            <p className="font-medium mb-2">Website Maintenance Services:</p>
+            <p>This website is maintained by Squarehaul Limited</p>
+            <p>Email: admin@squarehaul.online</p>
+            <p>Phone: 0717158091</p>
+          </div>
+          <div>
+            <p className="font-medium mb-2">Hosting Information:</p>
+            <p>Host: HostAfrica</p>
+            <p>Hosting Package: $20 Annual Fee</p>
+            <p>Next Payment Date: 02.01.2026</p>
+            <p>Domain: smittan.co.ke</p>
+          </div>
         </AlertDescription>
       </Alert>
     </div>

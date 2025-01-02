@@ -1,4 +1,4 @@
-import { Home, LogOut } from "lucide-react";
+import { Home, LogOut, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -37,7 +37,7 @@ export const AdminSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
-          {menuItems.map((item) => (
+          {menuItems.filter(item => item.label !== "Guide Through Your Website").map((item) => (
             <SidebarMenuItem key={item.label}>
               <SidebarMenuButton
                 asChild
@@ -53,6 +53,16 @@ export const AdminSidebar = () => {
         </SidebarMenu>
       </SidebarContent>
       <div className="mt-auto border-t border-white/10">
+        <div className="p-4 border-b border-white/10">
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-white hover:bg-[#7E69AB]/10"
+            onClick={() => navigate("/admin/website-guide")}
+          >
+            <BookOpen className="w-5 h-5 mr-3" />
+            Guide Through Your Website
+          </Button>
+        </div>
         <div className="p-4 border-b border-white/10">
           <Button
             variant="ghost"
