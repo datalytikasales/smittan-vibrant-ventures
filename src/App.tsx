@@ -9,6 +9,7 @@ import GalleryList from "@/pages/admin/GalleryList";
 import EditGallery from "@/pages/admin/EditGallery";
 import WebsiteGuide from "@/pages/admin/WebsiteGuide";
 import RegisterAdmin from "@/pages/admin/RegisterAdmin";
+import UpdateCompanyProfile from "@/pages/admin/UpdateCompanyProfile";
 import Index from "@/pages/Index";
 import Gallery from "@/pages/Gallery";
 import Contact from "@/pages/Contact";
@@ -41,6 +42,7 @@ function App() {
           <Route path="edit-gallery" element={<EditGallery />} />
           <Route path="website-guide" element={<WebsiteGuide />} />
           <Route path="register" element={<RegisterAdmin />} />
+          <Route path="company-profile" element={<UpdateCompanyProfile />} />
         </Route>
       </Routes>
       <Toaster />

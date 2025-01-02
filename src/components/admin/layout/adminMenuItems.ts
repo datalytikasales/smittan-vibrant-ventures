@@ -4,6 +4,7 @@ import {
   Plus,
   BookOpen,
   UserPlus,
+  FileText
 } from "lucide-react";
 
 export const menuItems = [
@@ -21,6 +22,11 @@ export const menuItems = [
     icon: Plus,
     label: "Create New Project",
     href: "/admin/edit-gallery"
+  },
+  {
+    icon: FileText,
+    label: "Update Company Profile",
+    href: "/admin/company-profile"
   },
   {
     icon: BookOpen,

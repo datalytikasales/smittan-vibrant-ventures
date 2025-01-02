@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { 
   MapPin, Target, Megaphone, 
-  BarChart2, Wallet, ArrowRight
+  BarChart2, Wallet, GraduationCap, ArrowRight
 } from "lucide-react";
 
 const services = [
@@ -61,6 +61,17 @@ const services = [
       "Professional Debt Recovery",
       "Risk Assessment",
       "Payment Plan Structuring"
+    ]
+  },
+  {
+    icon: GraduationCap,
+    title: "Sales and Marketing Training",
+    description: "Comprehensive training programs designed to enhance your team's sales capabilities and marketing expertise.",
+    features: [
+      "Sales Techniques & Strategy",
+      "Marketing Best Practices",
+      "Customer Relationship Management",
+      "Performance Metrics & Analytics"
     ]
   }
 ];

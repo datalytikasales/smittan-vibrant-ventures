@@ -1,7 +1,23 @@
 import { Download, Facebook, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 export const Footer = () => {
+  const { data: companyProfile } = useQuery({
+    queryKey: ['companyProfile'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('company_documents')
+        .select('file_url')
+        .eq('document_type', 'company_profile')
+        .single();
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
   return (
     <footer className="bg-smittan-900 text-white">
       <div className="container py-12 md:py-16">
@@ -48,16 +64,9 @@ export const Footer = () => {
               <p>
                 <strong>Brian Kariuki</strong>
                 <br />
-                Project Manager
+                Project Manager - Vilcom
                 <br />
                 <a href="mailto:bkariuki@smittan.co.ke" className="hover:text-smittan-300">bkariuki@smittan.co.ke</a>
-              </p>
-              <p>
-                <strong>Felix Kiprop</strong>
-                <br />
-                Territory Manager (Isiolo/Meru Region)
-                <br />
-                <a href="mailto:fkiprop@smittan.co.ke" className="hover:text-smittan-300">fkiprop@smittan.co.ke</a>
               </p>
             </div>
           </div>
@@ -68,7 +77,7 @@ export const Footer = () => {
               <Button 
                 variant="default" 
                 className="w-full justify-start"
-                onClick={() => window.open('/lovable-uploads/Profile-Smittan.pptx', '_blank')}
+                onClick={() => window.open(companyProfile?.file_url, '_blank')}
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download Company Profile

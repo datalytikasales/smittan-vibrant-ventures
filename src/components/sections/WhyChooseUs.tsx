@@ -23,7 +23,7 @@ const whyChooseUs: WhyChooseUsItem[] = [
   {
     title: "Community Engagement",
     description: "As a socially conscious entity, we actively engage with local communities, empowering small businesses through training, market access, and market insights.",
-    stats: "500+ Businesses Empowered",
+    stats: "Many Businesses Empowered",
     image: "https://lweyajoe.github.io/myImages/community.png"
   },
   {
@@ -35,7 +35,7 @@ const whyChooseUs: WhyChooseUsItem[] = [
   {
     title: "Future Plans",
     description: "We envision expanding our operations across Africa, acquiring more businesses and delivering lasting solutions in sales and marketing for sustainable partner growth.",
-    stats: "25+ Countries by 2025",
+    stats: "5+ Countries by 2035",
     image: "https://lweyajoe.github.io/myImages/future-plans.png"
   }
 ];
