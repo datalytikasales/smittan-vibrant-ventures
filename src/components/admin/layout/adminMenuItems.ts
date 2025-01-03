@@ -17,8 +17,8 @@ export const menuItems = [
     icon: FileText,
   },
   {
-    icon: UserPlus,
     label: "Register New Admin",
-    href: "/admin/register"
+    href: "/admin/register",
+    icon: UserPlus,
   },
 ];
