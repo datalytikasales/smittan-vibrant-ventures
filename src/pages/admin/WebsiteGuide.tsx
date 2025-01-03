@@ -111,6 +111,12 @@ const WebsiteGuide = () => {
             <p>Next Payment Date: 02.01.2026</p>
             <p>Domain: smittan.co.ke</p>
           </div>
+          <div>
+            <p className="font-medium mb-2">Emails:</p>
+            <p>Emails Host: https://mail.zoho.com</p>
+            <p>Emails: jgikunda@smittan.co.ke, bkariuki@smittan.co.ke, admin@smittan.co.ke</p>
+            <p>NB: Set Up The Emails With 'Like2024!' as the first password. Please change the passwords after the first log in.</p>
+          </div>
         </AlertDescription>
       </Alert>
     </div>
