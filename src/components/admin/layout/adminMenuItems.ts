@@ -2,11 +2,6 @@ import { LayoutDashboard, Image, Users, FileText } from "lucide-react";
 
 export const menuItems = [
   {
-    label: "Dashboard",
-    href: "/admin/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
     label: "Gallery",
     href: "/admin/gallery",
     icon: Image,
@@ -20,5 +15,10 @@ export const menuItems = [
     label: "Company Profile",
     href: "/admin/company-profile",
     icon: FileText,
+  },
+  {
+    icon: UserPlus,
+    label: "Register New Admin",
+    href: "/admin/register"
   },
 ];
