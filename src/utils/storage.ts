@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 export const uploadGalleryImage = async (file: File): Promise<string> => {
   try {
