@@ -58,7 +58,6 @@ export const SmittanAssistant = () => {
     setCurrentInput("");
 
     if (currentQuestionIndex < questions.length - 1) {
-      // Show next question after a short delay
       setTimeout(() => {
         setMessages(prev => [
           ...prev,
@@ -67,7 +66,6 @@ export const SmittanAssistant = () => {
         setCurrentQuestionIndex(prev => prev + 1);
       }, 500);
     } else if (currentQuestionIndex === questions.length - 1) {
-      // Submit form data
       setIsSubmitting(true);
       try {
         const { error } = await supabase
@@ -76,7 +74,6 @@ export const SmittanAssistant = () => {
 
         if (error) throw error;
 
-        // Show success message
         setTimeout(() => {
           setMessages(prev => [
             ...prev,
@@ -105,20 +102,25 @@ export const SmittanAssistant = () => {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      {/* Chat Toggle Button */}
-      <Button
-        onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          "rounded-full w-14 h-14 p-0 shadow-lg transition-transform hover:scale-105",
-          isOpen ? "bg-red-500 hover:bg-red-600" : "bg-smittan-600 hover:bg-smittan-700"
-        )}
-      >
-        {isOpen ? (
-          <X className="h-6 w-6" />
-        ) : (
-          <MessageCircle className="h-6 w-6" />
-        )}
-      </Button>
+      {/* Chat Button Container with Text */}
+      <div className="flex items-center gap-3">
+        <span className="text-sm font-medium text-gray-600 bg-white/80 px-3 py-1 rounded-full shadow-sm backdrop-blur-sm">
+          Talk To Me
+        </span>
+        <Button
+          onClick={() => setIsOpen(!isOpen)}
+          className={cn(
+            "rounded-full w-14 h-14 p-0 shadow-lg transition-transform hover:scale-105",
+            isOpen ? "bg-red-500 hover:bg-red-600" : "bg-[#D3E4FD] hover:bg-[#1EAEDB]"
+          )}
+        >
+          {isOpen ? (
+            <X className="h-6 w-6 text-white" />
+          ) : (
+            <MessageCircle className="h-6 w-6 text-[#1EAEDB]" />
+          )}
+        </Button>
+      </div>
 
       {/* Chat Window */}
       <div
@@ -130,7 +132,7 @@ export const SmittanAssistant = () => {
         )}
       >
         {/* Chat Header */}
-        <div className="bg-smittan-600 text-white p-4 rounded-t-lg">
+        <div className="bg-[#1EAEDB] text-white p-4 rounded-t-lg">
           <h3 className="font-semibold">Smittan Assistant</h3>
           <p className="text-sm opacity-90">How can we help you today?</p>
         </div>
@@ -144,7 +146,7 @@ export const SmittanAssistant = () => {
                 "max-w-[80%] p-3 rounded-lg animate-fade-in",
                 message.type === 'assistant'
                   ? "bg-gray-100 rounded-tl-none"
-                  : "bg-smittan-600 text-white ml-auto rounded-tr-none"
+                  : "bg-[#1EAEDB] text-white ml-auto rounded-tr-none"
               )}
             >
               {message.content}
@@ -161,13 +163,13 @@ export const SmittanAssistant = () => {
               onChange={(e) => setCurrentInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
               placeholder="Type your message..."
-              className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-smittan-600"
+              className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1EAEDB]"
               disabled={isSubmitting}
             />
             <Button
               onClick={handleSubmit}
               disabled={!currentInput.trim() || isSubmitting}
-              className="bg-smittan-600 hover:bg-smittan-700"
+              className="bg-[#1EAEDB] hover:bg-[#0FA0CE]"
             >
               <Send className="h-4 w-4" />
             </Button>

@@ -65,17 +65,23 @@ const Careers = () => {
         <div className="space-y-8">
           {jobs?.map((job) => (
             <div key={job.id} className="bg-white p-6 rounded-lg shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-900">{job.title}</h2>
-              <p className="text-sm text-gray-500 mt-2">
-                Posted on {format(new Date(job.posted_at), "MMMM d, yyyy")}
-              </p>
+              {/* Title and date in light blue card with white text */}
+              <div className="bg-[#D3E4FD] p-6 -mx-6 -mt-6 mb-6 rounded-t-lg">
+                <h2 className="text-2xl font-bold text-white">{job.title}</h2>
+                <p className="text-sm text-white/90 mt-2">
+                  Posted on {format(new Date(job.posted_at), "MMMM d, yyyy")}
+                </p>
+              </div>
+              
               <div className="mt-4 prose max-w-none">
-                <h3 className="text-lg font-semibold">Job Description</h3>
+                {/* Orange section headers */}
+                <h3 className="text-lg font-semibold text-[#F97316]">Job Description</h3>
                 <p className="whitespace-pre-wrap">{job.description}</p>
                 
-                <h3 className="text-lg font-semibold mt-4">Qualifications</h3>
+                <h3 className="text-lg font-semibold mt-4 text-[#F97316]">Qualifications</h3>
                 <p className="whitespace-pre-wrap">{job.qualifications}</p>
               </div>
+              
               <div className="mt-6">
                 <Button 
                   onClick={() => setSelectedJob(job)}
