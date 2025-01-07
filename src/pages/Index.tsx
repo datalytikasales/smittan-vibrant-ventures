@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
-  const { data: servicesData } = useQuery({
+  const { data: servicesData, isLoading, error } = useQuery({
     queryKey: ['services'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -63,32 +63,40 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {servicesData?.map((service) => (
-              <Card 
-                key={service.id} 
-                className="hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-smittan-600"
-              >
-                <div className="p-6 space-y-4">
-                  <div className="bg-[#F97316]/10 p-3 rounded-full w-fit">
-                    <ArrowRight size={24} className="text-[#F97316]" />
+          {isLoading ? (
+            <div className="text-center py-12">Loading services...</div>
+          ) : error ? (
+            <div className="text-center py-12 text-red-600">Error loading services. Please try again later.</div>
+          ) : servicesData && servicesData.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {servicesData.map((service) => (
+                <Card 
+                  key={service.id} 
+                  className="hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-smittan-600"
+                >
+                  <div className="p-6 space-y-4">
+                    <div className="bg-[#F97316]/10 p-3 rounded-full w-fit">
+                      <ArrowRight size={24} className="text-[#F97316]" />
+                    </div>
+                    <h3 className="text-xl font-semibold">{service.title}</h3>
+                    <p className="text-gray-600">{service.description}</p>
+                    {service.features && service.features.length > 0 && (
+                      <ul className="space-y-3">
+                        {service.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-center text-sm text-gray-600">
+                            <ChevronRight size={16} className="text-smittan-600 mr-2 flex-shrink-0" />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
-                  <h3 className="text-xl font-semibold">{service.title}</h3>
-                  <p className="text-gray-600">{service.description}</p>
-                  {service.features && service.features.length > 0 && (
-                    <ul className="space-y-3">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center text-sm text-gray-600">
-                          <ChevronRight size={16} className="text-smittan-600 mr-2 flex-shrink-0" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </Card>
-            ))}
-          </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">No services found.</div>
+          )}
         </div>
       </section>
 
