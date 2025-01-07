@@ -11,6 +11,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useEffect, useState } from "react";
+import type { CarouselApi } from "@/components/ui/carousel";
 
 const heroContent = [
   {
@@ -115,21 +116,34 @@ const servicesData = [
 ];
 
 const Index = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+  }, [api]);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroContent.length);
-    }, 5000); // Change slide every 5 seconds
+      if (api) {
+        api.scrollNext();
+      }
+    }, 5000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [api]);
 
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative h-[600px] md:h-[700px] overflow-hidden">
-        <Carousel className="w-full h-full" selectedIndex={currentSlide}>
+        <Carousel className="w-full h-full" setApi={setApi}>
           <CarouselContent>
             {heroContent.map((content, index) => (
               <CarouselItem key={content.id}>
@@ -139,7 +153,7 @@ const Index = () => {
                     alt={content.title}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-black/40" /> {/* Darker overlay instead of blue tint */}
+                  <div className="absolute inset-0 bg-black/40" />
                   <div className="relative h-full container flex items-center">
                     <div className="max-w-2xl space-y-6">
                       <h1 
@@ -188,9 +202,9 @@ const Index = () => {
               {heroContent.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => setCurrentSlide(index)}
+                  onClick={() => api?.scrollTo(index)}
                   className={`w-3 h-3 rounded-full transition-all ${
-                    currentSlide === index ? "bg-white scale-125" : "bg-white/50"
+                    current === index ? "bg-white scale-125" : "bg-white/50"
                   }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
