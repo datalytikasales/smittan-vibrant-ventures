@@ -1,25 +1,85 @@
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronRight, MapPin, Target, Megaphone, BarChart2, Wallet, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+
+const servicesData = [
+  {
+    id: 1,
+    title: "Market Mapping",
+    description: "Strategic market analysis and opportunity identification to drive business growth.",
+    icon: MapPin,
+    features: [
+      "Comprehensive Market Analysis",
+      "Opportunity Identification",
+      "Competitor Landscape Assessment",
+      "Growth Potential Evaluation"
+    ]
+  },
+  {
+    id: 2,
+    title: "Market Activations",
+    description: "Specialized sales teams dedicated to revitalizing dormant accounts and acquiring new customers.",
+    icon: Target,
+    features: [
+      "Customer Reactivation Programs",
+      "New Customer Acquisition",
+      "Performance-Based Sales Teams",
+      "Target Achievement Tracking"
+    ]
+  },
+  {
+    id: 3,
+    title: "Roadshows & Brand Promotions",
+    description: "Comprehensive marketing and merchandising solutions that elevate brand visibility and market presence.",
+    icon: Megaphone,
+    features: [
+      "Strategic Event Planning",
+      "Brand Activation Campaigns",
+      "Merchandising Excellence",
+      "Impact Measurement"
+    ]
+  },
+  {
+    id: 4,
+    title: "Route-to-Market Strategy",
+    description: "Optimize your commercial operations and distribution networks for maximum efficiency and market coverage.",
+    icon: BarChart2,
+    features: [
+      "Distribution Network Analysis",
+      "Cost Optimization",
+      "Sales Force Efficiency",
+      "Territory Planning"
+    ]
+  },
+  {
+    id: 5,
+    title: "Credit Management Solutions",
+    description: "Professional debt collection and portfolio management services to maintain healthy financial operations.",
+    icon: Wallet,
+    features: [
+      "Portfolio Analysis",
+      "Professional Debt Recovery",
+      "Risk Assessment",
+      "Payment Plan Structuring"
+    ]
+  },
+  {
+    id: 6,
+    title: "Sales and Marketing Training",
+    description: "Comprehensive training programs designed to enhance your team's sales capabilities and marketing expertise.",
+    icon: GraduationCap,
+    features: [
+      "Sales Techniques & Strategy",
+      "Marketing Best Practices",
+      "Customer Relationship Management",
+      "Performance Metrics & Analytics"
+    ]
+  }
+];
 
 const Index = () => {
-  const { data: servicesData, isLoading, error } = useQuery({
-    queryKey: ['services'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('services_sections')
-        .select('*')
-        .order('order_index', { ascending: true });
-      
-      if (error) throw error;
-      return data;
-    }
-  });
-
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -63,20 +123,17 @@ const Index = () => {
             </p>
           </div>
           
-          {isLoading ? (
-            <div className="text-center py-12">Loading services...</div>
-          ) : error ? (
-            <div className="text-center py-12 text-red-600">Error loading services. Please try again later.</div>
-          ) : servicesData && servicesData.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {servicesData.map((service) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {servicesData.map((service) => {
+              const IconComponent = service.icon;
+              return (
                 <Card 
                   key={service.id} 
                   className="hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-smittan-600"
                 >
                   <div className="p-6 space-y-4">
                     <div className="bg-[#F97316]/10 p-3 rounded-full w-fit">
-                      <ArrowRight size={24} className="text-[#F97316]" />
+                      <IconComponent size={24} className="text-[#F97316]" />
                     </div>
                     <h3 className="text-xl font-semibold">{service.title}</h3>
                     <p className="text-gray-600">{service.description}</p>
@@ -92,11 +149,9 @@ const Index = () => {
                     )}
                   </div>
                 </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">No services found.</div>
-          )}
+              );
+            })}
+          </div>
         </div>
       </section>
 
