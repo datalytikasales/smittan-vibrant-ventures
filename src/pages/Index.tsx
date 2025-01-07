@@ -41,7 +41,7 @@ const Index = () => {
                 <Link to="/services">
                   Get Started
                 </Link>
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight size={16} />
               </Button>
               <Button size="lg" variant="outline" className="border-[#F97316] text-[#F97316] hover:bg-[#F97316]/10">
                 <Link to="/about">
@@ -71,7 +71,7 @@ const Index = () => {
               >
                 <div className="p-6 space-y-4">
                   <div className="bg-[#F97316]/10 p-3 rounded-full w-fit">
-                    <service.icon className="h-8 w-8 text-[#F97316]" />
+                    <ArrowRight size={24} className="text-[#F97316]" />
                   </div>
                   <h3 className="text-xl font-semibold">{service.title}</h3>
                   <p className="text-gray-600">{service.description}</p>
@@ -79,7 +79,7 @@ const Index = () => {
                     <ul className="space-y-3">
                       {service.features.map((feature, idx) => (
                         <li key={idx} className="flex items-center text-sm text-gray-600">
-                          <ArrowRight className="h-4 w-4 text-smittan-600 mr-2 flex-shrink-0" />
+                          <ChevronRight size={16} className="text-smittan-600 mr-2 flex-shrink-0" />
                           <span>{feature}</span>
                         </li>
                       ))}
