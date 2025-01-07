@@ -83,15 +83,25 @@ export const Footer = () => {
                 Download Company Profile
               </Button>
               <div className="flex space-x-4">
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-300 transition-colors">
+                <a 
+                  href="https://www.linkedin.com/company/smittan-solutions-limited" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:text-smittan-300 transition-colors"
+                >
                   <Linkedin size={24} />
                 </a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-300 transition-colors">
+                <a 
+                  href="https://www.facebook.com/smittaninvestmentltd" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:text-smittan-300 transition-colors"
+                >
                   <Facebook size={24} />
                 </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-smittan-300 transition-colors">
+                <span className="hover:text-smittan-300 transition-colors cursor-not-allowed opacity-50">
                   <Twitter size={24} />
-                </a>
+                </span>
               </div>
             </div>
           </div>

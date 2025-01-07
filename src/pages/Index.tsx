@@ -3,8 +3,23 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
+  const { data: servicesData } = useQuery({
+    queryKey: ['services'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('services_sections')
+        .select('*')
+        .order('order_index', { ascending: true });
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -38,35 +53,38 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Services Preview */}
+      {/* Services Section */}
       <section className="section-padding bg-gray-50">
-        <div className="bg-white shadow-sm mb-12 w-full">
-          <div className="container py-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold mb-4">Our Services</h2>
-              <p className="text-gray-600">
-                Comprehensive business development solutions tailored to your needs
-              </p>
-            </div>
-          </div>
-        </div>
-        
         <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <Card key={index} className="card-hover">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Our Services</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Comprehensive business development solutions tailored to your needs
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {servicesData?.map((service) => (
+              <Card 
+                key={service.id} 
+                className="hover:shadow-lg transition-shadow duration-300 border-t-4 border-t-smittan-600"
+              >
                 <div className="p-6 space-y-4">
-                  <div className="w-12 h-12 bg-[#F97316]/10 rounded-lg flex items-center justify-center">
-                    <service.icon className="h-6 w-6 text-[#F97316]" />
+                  <div className="bg-[#F97316]/10 p-3 rounded-full w-fit">
+                    <service.icon className="h-8 w-8 text-[#F97316]" />
                   </div>
                   <h3 className="text-xl font-semibold">{service.title}</h3>
                   <p className="text-gray-600">{service.description}</p>
-                  <Button variant="link" className="text-[#F97316] p-0 h-auto font-semibold" asChild>
-                    <Link to="/services">
-                      Learn More
-                      <ChevronRight className="ml-1 h-4 w-4" />
-                    </Link>
-                  </Button>
+                  {service.features && service.features.length > 0 && (
+                    <ul className="space-y-3">
+                      {service.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-center text-sm text-gray-600">
+                          <ArrowRight className="h-4 w-4 text-smittan-600 mr-2 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </Card>
             ))}
@@ -97,8 +115,8 @@ const Index = () => {
             <p className="text-xl text-gray-200">
               Let's discuss how we can help you achieve your business goals and expand into new markets.
             </p>
-            <Button size="lg" className="bg-white text-smittan-600 hover:bg-gray-100">
-              Contact Us Today
+            <Button size="lg" className="bg-white text-smittan-600 hover:bg-gray-100" asChild>
+              <Link to="/contact">Contact Us Today</Link>
             </Button>
           </div>
         </div>
@@ -106,23 +124,5 @@ const Index = () => {
     </div>
   );
 };
-
-const services = [
-  {
-    title: "Sales Development",
-    description: "Build and optimize your sales processes for maximum efficiency and results.",
-    icon: ChevronRight,
-  },
-  {
-    title: "Marketing Strategy",
-    description: "Create compelling marketing campaigns that resonate with your target audience.",
-    icon: ChevronRight,
-  },
-  {
-    title: "Brand Development",
-    description: "Develop a strong brand identity that sets you apart from the competition.",
-    icon: ChevronRight,
-  },
-];
 
 export default Index;
