@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/carousel";
 import { useEffect, useState } from "react";
 import type { CarouselApi } from "@/components/ui/carousel";
+import { TypeAnimation } from 'react-type-animation';
 
 const heroContent = [
   {
@@ -127,23 +128,31 @@ const Index = () => {
     api.on("select", () => {
       setCurrent(api.selectedScrollSnap());
     });
+
+    // Enable loop mode
+    api.scrollTo(0);
+    api.scrollSnapList();
   }, [api]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (api) {
-        api.scrollNext();
+        if (current === heroContent.length - 1) {
+          api.scrollTo(0);
+        } else {
+          api.scrollNext();
+        }
       }
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [api]);
+  }, [api, current]);
 
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative h-[600px] md:h-[700px] overflow-hidden">
-        <Carousel className="w-full h-full" setApi={setApi}>
+        <Carousel className="w-full h-full" setApi={setApi} opts={{ loop: true }}>
           <CarouselContent>
             {heroContent.map((content, index) => (
               <CarouselItem key={content.id}>
@@ -162,12 +171,19 @@ const Index = () => {
                       >
                         {content.title}
                       </h1>
-                      <p 
-                        className="text-xl text-white/90 animate-fade-up"
+                      <div 
+                        className="text-xl text-white/90 animate-fade-up min-h-[96px]"
                         style={{ animationDelay: '400ms' }}
                       >
-                        {content.description}
-                      </p>
+                        {current === index && (
+                          <TypeAnimation
+                            sequence={[content.description]}
+                            speed={50}
+                            repeat={0}
+                            cursor={false}
+                          />
+                        )}
+                      </div>
                       <div 
                         className="flex space-x-4 animate-fade-up"
                         style={{ animationDelay: '600ms' }}
