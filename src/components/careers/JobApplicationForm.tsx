@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { uploadImageToGitHub } from "@/utils/githubUploader";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -64,6 +64,7 @@ export function JobApplicationForm({ job, onClose }: JobApplicationFormProps) {
         });
         return;
       }
+      console.log("File selected:", file.name, "Type:", file.type);
       setSelectedFile(file);
     }
   };
@@ -72,6 +73,16 @@ export function JobApplicationForm({ job, onClose }: JobApplicationFormProps) {
     console.log("Starting form submission with values:", values);
     console.log("Selected file:", selectedFile);
     console.log("Job ID:", job?.id);
+
+    if (!job?.id) {
+      console.error("No job ID provided");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Invalid job posting. Please try again.",
+      });
+      return;
+    }
 
     if (!selectedFile) {
       toast({
@@ -92,17 +103,23 @@ export function JobApplicationForm({ job, onClose }: JobApplicationFormProps) {
 
       // Save application to database
       console.log("Saving application to database...");
-      const { data, error } = await supabase.from("job_applicants").insert({
-        job_posting_id: job?.id,
-        name: values.name,
-        email: values.email,
-        phone_number: values.phone || null,
-        resume_url: resumeUrl,
-      }).select();
+      const { data, error } = await supabase
+        .from("job_applicants")
+        .insert({
+          job_posting_id: job.id,
+          name: values.name,
+          email: values.email,
+          phone_number: values.phone || null,
+          resume_url: resumeUrl,
+        })
+        .select();
 
       console.log("Database response:", { data, error });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
 
       toast({
         title: "Application submitted",
@@ -112,6 +129,7 @@ export function JobApplicationForm({ job, onClose }: JobApplicationFormProps) {
       onClose();
     } catch (error: any) {
       console.error("Error submitting application:", error);
+      console.error("Error details:", error.response?.data || error.message);
       toast({
         variant: "destructive",
         title: "Error",

@@ -1,5 +1,6 @@
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
+import { SmittanAssistant } from "@/components/chat/SmittanAssistant";
 
 interface PublicLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ export const PublicLayout = ({ children }: PublicLayoutProps) => {
         {children}
       </main>
       <Footer />
+      <SmittanAssistant />
     </div>
   );
 };
