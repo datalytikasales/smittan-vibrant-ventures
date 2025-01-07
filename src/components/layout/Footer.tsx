@@ -24,6 +24,13 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="space-y-4">
             <h3 className="text-xl font-semibold">About Smittan</h3>
+            <div className="bg-white p-4 rounded-lg w-full">
+              <img 
+                src="/lovable-uploads/e3a75738-c06d-4783-ac82-7934311a864a.png" 
+                alt="Smittan Logo" 
+                className="h-16 w-auto mx-auto"
+              />
+            </div>
             <p className="text-sm text-gray-300">
               Smittan Solutions Limited is a leading business development agency specializing in sales, marketing, and brand development. We help companies venture into new markets and achieve their growth objectives.
             </p>

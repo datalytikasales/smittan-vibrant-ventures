@@ -1,7 +1,7 @@
-import { Image, Users, FileText, UserPlus } from "lucide-react";
+import { Image, Users, FileText, UserPlus, Briefcase } from "lucide-react";
 
 export const menuItems = [
-{
+  {
     label: "Gallery",
     href: "/admin/gallery",
     icon: Image,
@@ -20,5 +20,15 @@ export const menuItems = [
     label: "Register New Admin",
     href: "/admin/register",
     icon: UserPlus,
+  },
+  {
+    label: "Job Postings",
+    href: "/admin/job-postings",
+    icon: Briefcase,
+  },
+  {
+    label: "Job Applications",
+    href: "/admin/job-applications",
+    icon: Users,
   },
 ];

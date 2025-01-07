@@ -143,7 +143,7 @@ const Index = () => {
           api.scrollNext();
         }
       }
-    }, 5000);
+    }, 10000); // Increased from 5000 to 10000 milliseconds
 
     return () => clearInterval(timer);
   }, [api, current]);
@@ -200,7 +200,7 @@ const Index = () => {
                         <Button 
                           size="lg" 
                           variant="outline" 
-                          className="border-white text-white hover:bg-white/10"
+                          className="border-white text-[#F97316] hover:bg-white/10"
                         >
                           <Link to="/about">
                             Learn More

@@ -1,4 +1,4 @@
-import { Phone, Mail, Facebook, Linkedin, Twitter, LogIn } from "lucide-react";
+import { Phone, Mail, Facebook, Linkedin, Twitter, LogIn, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -19,15 +19,25 @@ export const Navbar = () => {
             </a>
           </div>
           <div className="flex items-center space-x-4">
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#F97316] transition-colors">
+            <a 
+              href="https://www.linkedin.com/company/smittan-solutions-limited" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hover:text-[#F97316] transition-colors"
+            >
               <Linkedin size={16} />
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#F97316] transition-colors">
+            <a 
+              href="https://www.facebook.com/smittaninvestmentltd" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hover:text-[#F97316] transition-colors"
+            >
               <Facebook size={16} />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#F97316] transition-colors">
+            <span className="hover:text-[#F97316] transition-colors cursor-not-allowed opacity-50">
               <Twitter size={16} />
-            </a>
+            </span>
           </div>
         </div>
       </div>
@@ -44,6 +54,10 @@ export const Navbar = () => {
             <Link to="/services" className="nav-link">Services</Link>
             <Link to="/about" className="nav-link">About</Link>
             <Link to="/gallery" className="nav-link">Gallery</Link>
+            <Link to="/careers" className="nav-link flex items-center gap-1">
+              <Briefcase className="h-4 w-4" />
+              Careers
+            </Link>
             <Link to="/contact" className="nav-link">Contact</Link>
             <a href="https://mail.zoho.com" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" size="sm" className="flex items-center gap-2">

@@ -98,6 +98,74 @@ export type Database = {
           },
         ]
       }
+      job_applicants: {
+        Row: {
+          applied_at: string | null
+          email: string
+          id: string
+          job_posting_id: string
+          name: string
+          phone_number: string | null
+          resume_url: string
+        }
+        Insert: {
+          applied_at?: string | null
+          email: string
+          id?: string
+          job_posting_id: string
+          name: string
+          phone_number?: string | null
+          resume_url: string
+        }
+        Update: {
+          applied_at?: string | null
+          email?: string
+          id?: string
+          job_posting_id?: string
+          name?: string
+          phone_number?: string | null
+          resume_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applicants_job_posting_id_fkey"
+            columns: ["job_posting_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_postings: {
+        Row: {
+          description: string
+          id: string
+          is_active: boolean | null
+          posted_at: string | null
+          qualifications: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          description: string
+          id?: string
+          is_active?: boolean | null
+          posted_at?: string | null
+          qualifications: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          description?: string
+          id?: string
+          is_active?: boolean | null
+          posted_at?: string | null
+          qualifications?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           id: string
