@@ -6,13 +6,17 @@ import { PageHero } from "@/components/layout/PageHero";
 import { JobApplicationForm } from "@/components/careers/JobApplicationForm";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MapPin, Calendar } from "lucide-react";
 
 interface JobPosting {
   id: string;
   title: string;
   description: string;
+  responsibilities: string;
   qualifications: string;
   posted_at: string;
+  location: string;
+  apply_by_date: string;
 }
 
 const Careers = () => {
@@ -65,18 +69,33 @@ const Careers = () => {
         <div className="space-y-8">
           {jobs?.map((job) => (
             <div key={job.id} className="bg-white p-6 rounded-lg shadow-sm">
-              {/* Title and date in light blue card with white text */}
               <div className="bg-[#D3E4FD] p-6 -mx-6 -mt-6 mb-6 rounded-t-lg">
                 <h2 className="text-2xl font-bold text-white">{job.title}</h2>
-                <p className="text-sm text-white/90 mt-2">
-                  Posted on {format(new Date(job.posted_at), "MMMM d, yyyy")}
-                </p>
+                <div className="flex flex-wrap gap-4 mt-2 text-white/90">
+                  <p className="text-sm">
+                    Posted on {format(new Date(job.posted_at), "MMMM d, yyyy")}
+                  </p>
+                  {job.location && (
+                    <p className="text-sm flex items-center">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      {job.location}
+                    </p>
+                  )}
+                  {job.apply_by_date && (
+                    <p className="text-sm flex items-center">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      Apply by {format(new Date(job.apply_by_date), "MMMM d, yyyy")}
+                    </p>
+                  )}
+                </div>
               </div>
               
               <div className="mt-4 prose max-w-none">
-                {/* Orange section headers */}
                 <h3 className="text-lg font-semibold text-[#F97316]">Job Description</h3>
                 <p className="whitespace-pre-wrap">{job.description}</p>
+                
+                <h3 className="text-lg font-semibold mt-4 text-[#F97316]">Key Responsibilities</h3>
+                <p className="whitespace-pre-wrap">{job.responsibilities}</p>
                 
                 <h3 className="text-lg font-semibold mt-4 text-[#F97316]">Qualifications</h3>
                 <p className="whitespace-pre-wrap">{job.qualifications}</p>

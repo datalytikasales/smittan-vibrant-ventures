@@ -138,29 +138,38 @@ export type Database = {
       }
       job_postings: {
         Row: {
+          apply_by_date: string | null
           description: string
           id: string
           is_active: boolean | null
+          location: string | null
           posted_at: string | null
           qualifications: string
+          responsibilities: string
           title: string
           updated_at: string | null
         }
         Insert: {
+          apply_by_date?: string | null
           description: string
           id?: string
           is_active?: boolean | null
+          location?: string | null
           posted_at?: string | null
           qualifications: string
+          responsibilities?: string
           title: string
           updated_at?: string | null
         }
         Update: {
+          apply_by_date?: string | null
           description?: string
           id?: string
           is_active?: boolean | null
+          location?: string | null
           posted_at?: string | null
           qualifications?: string
+          responsibilities?: string
           title?: string
           updated_at?: string | null
         }

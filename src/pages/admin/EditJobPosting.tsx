@@ -24,7 +24,10 @@ import { Switch } from "@/components/ui/switch";
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
+  responsibilities: z.string().min(1, "Responsibilities are required"),
   qualifications: z.string().min(1, "Qualifications are required"),
+  location: z.string().min(1, "Location is required"),
+  apply_by_date: z.string().min(1, "Application deadline is required"),
   is_active: z.boolean().default(true),
 });
 
@@ -43,7 +46,10 @@ const EditJobPosting = () => {
     defaultValues: {
       title: "",
       description: "",
+      responsibilities: "",
       qualifications: "",
+      location: "",
+      apply_by_date: "",
       is_active: true,
     },
   });
@@ -84,7 +90,10 @@ const EditJobPosting = () => {
           form.reset({
             title: data.title,
             description: data.description,
+            responsibilities: data.responsibilities,
             qualifications: data.qualifications,
+            location: data.location || "",
+            apply_by_date: data.apply_by_date ? new Date(data.apply_by_date).toISOString().split('T')[0] : "",
             is_active: data.is_active,
           });
         }
@@ -123,7 +132,10 @@ const EditJobPosting = () => {
             .update({
               title: values.title,
               description: values.description,
+              responsibilities: values.responsibilities,
               qualifications: values.qualifications,
+              location: values.location,
+              apply_by_date: values.apply_by_date,
               is_active: values.is_active,
               updated_at: new Date().toISOString(),
             })
@@ -133,7 +145,10 @@ const EditJobPosting = () => {
             .insert({
               title: values.title,
               description: values.description,
+              responsibilities: values.responsibilities,
               qualifications: values.qualifications,
+              location: values.location,
+              apply_by_date: values.apply_by_date,
               is_active: values.is_active,
             });
 
@@ -222,6 +237,24 @@ const EditJobPosting = () => {
 
             <FormField
               control={form.control}
+              name="responsibilities"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Responsibilities</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      {...field} 
+                      rows={6}
+                      placeholder="Enter the job responsibilities..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="qualifications"
               render={({ field }) => (
                 <FormItem>
@@ -231,6 +264,40 @@ const EditJobPosting = () => {
                       {...field} 
                       rows={6}
                       placeholder="Enter the required qualifications..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                      placeholder="Enter the job location (Town/City in Kenya)..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="apply_by_date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Application Deadline</FormLabel>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                      type="date"
                     />
                   </FormControl>
                   <FormMessage />
